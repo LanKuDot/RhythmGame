@@ -1,19 +1,19 @@
 ﻿/**
- * - Filename: PrepareNotes.cs
- * - The lifetime of PrepareNotes:
+ * - Filename: PrepareNote.cs
+ * - The lifetime of PrepareNote:
  * 1. Sleep after initializing.
  * 2. Sleeping until waked by TapPoint, and then playing the animation.
  * 3. If the animation ends, sleep.
  * 4. Goto 2.
- * - To increase the performance of the PrepareNotes,
- * the frame of PrepareNotes would update every fixed time interval,
+ * - To increase the performance of the PrepareNote,
+ * the frame of PrepareNote would update every fixed time interval,
  * not busy calling.
  * Hence, using FixedUpdate() instead of Update().
  */
 using UnityEngine;
 using System.Collections;
 
-public class PrepareNotes : MonoBehaviour
+public class PrepareNote : MonoBehaviour
 {
 	public Sprite[] sprites;	// Array storing all frames of prepareNote
 	private SpriteRenderer spriteRenderer;
@@ -31,7 +31,7 @@ public class PrepareNotes : MonoBehaviour
 		 * and x is the time interval ( in beats ) for playing
 		 * the entire frames of prepareNotes.
 		 * - fixedDeltaTime ( the interval that FixedUpdate() called,
-		 * and FixedUpdate() would update the frame of PrepareNotes ) 
+		 * and FixedUpdate() would update the frame of PrepareNote ) 
 		 * equals to 1 / framesPerSec.
 		 */
 		// Demo: x = 2, BPM = 140.
@@ -66,4 +66,4 @@ public class PrepareNotes : MonoBehaviour
 		spriteRenderer.sprite = sprites[0];
 	}
 
-}	// end of class PrepareNotes
+}	// end of class PrepareNote
