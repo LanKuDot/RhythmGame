@@ -35,7 +35,7 @@ public class PrepareNote : MonoBehaviour
 		 * equals to 1 / framesPerSec.
 		 */
 		// Demo: x = 2, BPM = 140.
-		Time.fixedDeltaTime = 60 * 2 / 140 / sprites.Length;
+		Time.fixedDeltaTime = ( float ) 60.0f * 2.0f / 140.0f / sprites.Length;
 		// Initialize the index number of frame
 		index = 0;
 		// Sleeping after finished initializing.
