@@ -49,7 +49,8 @@ public class PrepareNote : MonoBehaviour
 		spriteRenderer.sprite = sprites[ index ];
 		++index;
 		// If the animation ends, sleep.
-		gameObject.SetActive( false );
+		if ( index == sprites.Length )
+			gameObject.SetActive( false );
 	}
 
 	// OnDisable() is called when the game object becomes inactive.
