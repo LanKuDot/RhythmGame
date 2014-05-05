@@ -20,10 +20,10 @@ public class TapPoint : MonoBehaviour
 		 */
 		TPname = gameObject.name;
 		char tapPoint_index = TPname[ TPname.Length - 1 ];
-		preNotes[0] = GameObject.Find( "PrepareNote_" + tapPoint_index + "_U" );
-		preNotes[1] = GameObject.Find( "PrepareNote_" + tapPoint_index + "_R" );
-		preNotes[2] = GameObject.Find( "PrepareNote_" + tapPoint_index + "_D" );
-		preNotes[3] = GameObject.Find( "PrepareNote_" + tapPoint_index + "_L" );
+		preNotes[0] = GameObject.Find( "PrepareNote_" + tapPoint_index + "_0" );
+		preNotes[1] = GameObject.Find( "PrepareNote_" + tapPoint_index + "_1" );
+		preNotes[2] = GameObject.Find( "PrepareNote_" + tapPoint_index + "_2" );
+		preNotes[3] = GameObject.Find( "PrepareNote_" + tapPoint_index + "_3" );
 	}
 	
 	// Use this for initialization
