@@ -32,12 +32,12 @@ public class TapPoint : MonoBehaviour
 		// Initialize the index of the PrepareNotes
 		next = 0;
 	}
-
+	
 	/* Be called from NoteTable.
 	 * Wake a PrepareNote which belongs to this TapPoint up, and
 	 * the waked PrepareNote will play the animation.
 	 */
-	void wakeUpPrepareNote()
+	public void wakeUpPrepareNote()
 	{
 		/* The order of waking up is Up, Right, Down, Left, and back to Up again.
 		 */
