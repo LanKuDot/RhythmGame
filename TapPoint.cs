@@ -10,6 +10,7 @@ public class TapPoint : MonoBehaviour
 	private GameObject[] preNotes = new GameObject[4];	// Each TapPoint has 4 PrepareNote objects
 	private string TPname;	// The name of TapPoints object
 	private int next;		// The index of the next PrepareNote would be waked up
+	private int waitTouch;	// The index of the PrepareNote that waiting for being touched
 	
 	// Awake() is called before Start()
 	void Awake()
@@ -31,6 +32,7 @@ public class TapPoint : MonoBehaviour
 	{
 		// Initialize the index of the PrepareNotes
 		next = 0;
+		waitTouch = 0;
 	}
 	
 	/* Be called from NoteTable.
@@ -48,4 +50,23 @@ public class TapPoint : MonoBehaviour
 		next = next % preNotes.Length;
 	}
 	
+	/* Be called from TouchingEvent.checkTouch() if the TouchingEvent
+	 * detects the touched point is on the TapPoints.
+	 * Force a PrepareNote to sleep.
+	 * The order of forcing a PrepareNote to sleep is the order of PrepareNotes
+	 * played. For example, the order of playing PrepareNotes is 0, 1, 2, and 3,
+	 * then the order of forcing PrepareNotes is also 0, 1, 2, and 3.
+	 */
+	void touched()
+	{
+		// waitTouch can't be more than or equal to next
+		if ( waitTouch != next )
+		{
+			// Force a PrepareNote to sleep.
+			preNotes[waitTouch].SetActive( false );
+			// Update the index of waitTouch
+			++waitTouch;
+			waitTouch = waitTouch % preNotes.Length;
+		}
+	}
 }	// end of class TapPoint
