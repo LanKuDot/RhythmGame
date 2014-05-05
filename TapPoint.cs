@@ -36,8 +36,8 @@ public class TapPoint : MonoBehaviour
 	}
 	
 	/* Be called from NoteTable.
-	 * Wake a PrepareNote which belongs to this TapPoint up, and
-	 * the waked PrepareNote will play the animation.
+	 * Wake a PrepareNote which belongs to this TapPoint up.
+	 * The waked PrepareNote will play the animation.
 	 */
 	public void wakeUpPrepareNote()
 	{
