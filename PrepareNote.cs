@@ -41,8 +41,12 @@ public class PrepareNote : MonoBehaviour
 		 */
 		// Demo: x = 2, BPM = 140.
 		Time.fixedDeltaTime = ( float ) 60.0f * 2.0f / 140.0f / ( sprites.Length - 5 );
-		// Initialize the index number of frame
-		index = 0;
+		/* Initialize the index number of frame by assigning a garbage value to
+		 * avoid grading after initialization. PrepareNote will call OnDisable()
+		 * which sends the stop frame to Grader, but there is no note assigned
+		 * to TapPoint. The Grader will discard the invaild value.
+		 */
+		index = sprites.Length + 10;
 		// Setting position ID
 		position_ID = gameObject.name[12];
 		position_ID -= 48;

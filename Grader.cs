@@ -70,11 +70,17 @@ public class Grader : MonoBehaviour
 			level = gradeLevel.LATE;
 			gradeText_GUI[ position_ID ].guiText.text = "LATE";
 		}
-		else
+		else if ( stopFrame == 26 )
 		{
 			level = gradeLevel.MISS;
 			gradeText_GUI[ position_ID ].guiText.text = "MISS";
 		}
+		/* stopFrame > 26?
+		 * To avoid grading the initialization of the PrepareNote, which
+		 * will set the initial index to be "sprites.Length + 10" and
+		 * call OnDisable() after finished initialization.
+		 * The Grader would discard this value in grading, and display nothing.
+		 */
 
 		/* Combo counting and display */
 		if ( level == gradeLevel.BAD || level == gradeLevel.MISS )
