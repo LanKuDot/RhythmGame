@@ -18,6 +18,7 @@ public class PrepareNote : MonoBehaviour
 	public Sprite[] sprites;	// Array storing all frames of prepareNote
 	private SpriteRenderer spriteRenderer;
 	private int index;			// The index of frame
+	private int position_ID;	// The index of the position of PrepareNotes
 
 	// Use this for initialization
 	void Start ()
@@ -42,6 +43,9 @@ public class PrepareNote : MonoBehaviour
 		Time.fixedDeltaTime = ( float ) 60.0f * 2.0f / 140.0f / ( sprites.Length - 5 );
 		// Initialize the index number of frame
 		index = 0;
+		// Setting position ID
+		position_ID = gameObject.name[12];
+		position_ID -= 48;
 		// Sleeping after finished initializing.
 		gameObject.SetActive( false );
 	}
@@ -60,6 +64,7 @@ public class PrepareNote : MonoBehaviour
 	// OnDisable() is called when the game object becomes inactive.
 	void OnDisable()
 	{
+		Grader.Instance.grading( position_ID, index );
 		// Reset index to 0
 		index = 0;
 		/* Set the render frame to 0.
