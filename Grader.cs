@@ -11,6 +11,7 @@ public class Grader : MonoBehaviour
 {
 	private GameObject[] gradeText_GUI = new GameObject[9];
 	private GameObject comboText_GUI;
+	private int[] showing_tick = new int[9];	// Record the displaying time of text
 	private int combos;
 	/* Make Grader.grading() could be called directly. */
 	public static Grader Instance;
@@ -25,9 +26,12 @@ public class Grader : MonoBehaviour
 
 	void Awake()
 	{
-		// Set reference to all textGUI
+		// Set reference to all textGUI and initialize the showing_tick
 		for ( int i = 0; i < 9; ++i )
+		{
 			gradeText_GUI[i] = GameObject.Find( "GradeGUI_" + i );
+			showing_tick[i] = 0;
+		}
 		comboText_GUI = GameObject.Find( "ComboGUI" );
 
 		Instance = this;
@@ -38,6 +42,24 @@ public class Grader : MonoBehaviour
 	{
 		combos = 0;
 		comboText_GUI.guiText.text = " ";
+		// Hard coding...
+		Time.fixedDeltaTime = 0.040816f;
+	}
+
+	/* Counting the showing_tick of the gradeGUIs.
+	 * Make gradeGUIs showing the grade in certain time interval.
+	 */
+	void FixedUpdate()
+	{
+		for ( int i = 0; i < 9; ++i )
+		{
+			++showing_tick[i];
+			if ( showing_tick[i] > 10 )
+			{
+				gradeText_GUI[i].guiText.text = " ";
+				showing_tick[i] = 0;
+			}
+		}
 	}
 
 	/* Called from PrepareNote.OnDisable().
@@ -102,6 +124,9 @@ public class Grader : MonoBehaviour
 			// Combo bonus
 			Score.Instance.updateScore( 50 * combos );
 		}
+
+		// Reset showing tick after being tapped.
+		showing_tick[ position_ID ] = 0;
 	}
 
 }	// end of class Grader
