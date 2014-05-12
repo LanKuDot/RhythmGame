@@ -49,26 +49,30 @@ public class Grader : MonoBehaviour
 	{
 		gradeLevel level = gradeLevel.MISS;
 
-		/* Grading and diaplay the grade. */
+		/* Grading, displaying the grade, and updating the score. */
 		if ( stopFrame < 15 )
 		{
 			level = gradeLevel.BAD;
 			gradeText_GUI[ position_ID ].guiText.text = "BAD";
+			Score.Instance.updateScore( 100 );
 		}
 		else if ( stopFrame < 19 )
 		{
 			level = gradeLevel.EARLY;
 			gradeText_GUI[ position_ID ].guiText.text = "EARLY";
+			Score.Instance.updateScore( 400 );
 		}
 		else if ( stopFrame < 21 )
 		{
 			level = gradeLevel.PERFECT;
 			gradeText_GUI[ position_ID ].guiText.text = "PERFECT";
+			Score.Instance.updateScore( 600 );
 		}
 		else if ( stopFrame < 26 )
 		{
 			level = gradeLevel.LATE;
 			gradeText_GUI[ position_ID ].guiText.text = "LATE";
+			Score.Instance.updateScore( 400 );
 		}
 		else if ( stopFrame == 26 )
 		{
@@ -95,6 +99,8 @@ public class Grader : MonoBehaviour
 		{
 			++combos;
 			comboText_GUI.guiText.text = combos + " combos";
+			// Combo bonus
+			Score.Instance.updateScore( 50 * combos );
 		}
 	}
 
