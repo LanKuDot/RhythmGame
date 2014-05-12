@@ -33,9 +33,13 @@ public class PrepareNote : MonoBehaviour
 		 * - fixedDeltaTime ( the interval that FixedUpdate() called,
 		 * and FixedUpdate() would update the frame of PrepareNote ) 
 		 * equals to 1 / framesPerSec.
+		 * - About ( sprites.Length - 5 ):
+		 * Because I added 5 more frames after the best tapping timing, and
+		 * the original frames would be played in 2 beats, calulating the
+		 * fixedDeltaTime must minus 5 ( the # of frames added ).
 		 */
 		// Demo: x = 2, BPM = 140.
-		Time.fixedDeltaTime = ( float ) 60.0f * 2.0f / 140.0f / sprites.Length;
+		Time.fixedDeltaTime = ( float ) 60.0f * 2.0f / 140.0f / ( sprites.Length - 5 );
 		// Initialize the index number of frame
 		index = 0;
 		// Sleeping after finished initializing.
