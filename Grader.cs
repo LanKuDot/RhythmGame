@@ -9,9 +9,11 @@ using System.Collections;
 
 public class Grader : MonoBehaviour
 {
-	private GameObject[] gradeText_GUI = new GameObject[9];
+	private GameObject[] gradeText_GUI
+		= new GameObject[GameConfig.numOfTapNotes];
 	private GameObject comboText_GUI;
-	private int[] showing_tick = new int[9];	// Record the displaying time of text
+	private int[] showing_tick
+		= new int[GameConfig.numOfTapNotes];	// Record the displaying time of text
 	private int combos;
 	/* Make Grader.grading() could be called directly. */
 	public static Grader Instance;
@@ -27,7 +29,7 @@ public class Grader : MonoBehaviour
 	void Awake()
 	{
 		// Set reference to all textGUI and initialize the showing_tick
-		for ( int i = 0; i < 9; ++i )
+		for ( int i = 0; i < GameConfig.numOfTapNotes; ++i )
 		{
 			gradeText_GUI[i] = GameObject.Find( "GradeGUI_" + i );
 			showing_tick[i] = 0;
@@ -51,7 +53,7 @@ public class Grader : MonoBehaviour
 	 */
 	void FixedUpdate()
 	{
-		for ( int i = 0; i < 9; ++i )
+		for ( int i = 0; i < GameConfig.numOfTapNotes; ++i )
 		{
 			++showing_tick[i];
 			if ( showing_tick[i] > 10 )
@@ -72,31 +74,31 @@ public class Grader : MonoBehaviour
 		gradeLevel level = gradeLevel.MISS;
 
 		/* Grading, displaying the grade, and updating the score. */
-		if ( stopFrame < 15 )
+		if ( stopFrame < GameConfig.click_BAD )
 		{
 			level = gradeLevel.BAD;
 			gradeText_GUI[ position_ID ].guiText.text = "BAD";
 			Score.Instance.updateScore( 100 );
 		}
-		else if ( stopFrame < 19 )
+		else if ( stopFrame < GameConfig.click_EARLY )
 		{
 			level = gradeLevel.EARLY;
 			gradeText_GUI[ position_ID ].guiText.text = "EARLY";
 			Score.Instance.updateScore( 400 );
 		}
-		else if ( stopFrame < 21 )
+		else if ( stopFrame < GameConfig.click_PERFECT )
 		{
 			level = gradeLevel.PERFECT;
 			gradeText_GUI[ position_ID ].guiText.text = "PERFECT";
 			Score.Instance.updateScore( 600 );
 		}
-		else if ( stopFrame < 26 )
+		else if ( stopFrame < GameConfig.click_LATE )
 		{
 			level = gradeLevel.LATE;
 			gradeText_GUI[ position_ID ].guiText.text = "LATE";
 			Score.Instance.updateScore( 400 );
 		}
-		else if ( stopFrame == 26 )
+		else if ( stopFrame == GameConfig.click_MISS )
 		{
 			level = gradeLevel.MISS;
 			gradeText_GUI[ position_ID ].guiText.text = "MISS";

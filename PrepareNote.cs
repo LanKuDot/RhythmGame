@@ -40,7 +40,7 @@ public class PrepareNote : MonoBehaviour
 		 * fixedDeltaTime must minus 5 ( the # of frames added ).
 		 */
 		// Demo: x = 2, BPM = 140.
-		Time.fixedDeltaTime = ( float ) 60.0f * 2.0f / 140.0f / ( sprites.Length - 5 );
+		Time.fixedDeltaTime = ( float ) 60.0f * 2.0f / GameConfig.songBPM / ( sprites.Length - 5 );
 		/* Initialize the index number of frame by assigning a garbage value to
 		 * avoid grading after initialization. PrepareNote will call OnDisable()
 		 * which sends the stop frame to Grader, but there is no note assigned

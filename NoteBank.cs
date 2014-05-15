@@ -25,14 +25,15 @@ public class NoteBank : MonoBehaviour
 		}
 	};
 
-	public TapPoint[] tapPoints = new TapPoint[9];	// Direct reference to all TapPoints
+	public TapPoint[] tapPoints
+		= new TapPoint[GameConfig.numOfTapNotes];	// Direct reference to all TapPoints
 
 	private int beatCounter = -1;	// The counter counts beats after the song start playing.
 	private int nextBeat = 0;		// The next beat that PrepareNote would appear.
 	private int noteTableIndex = 0;	// The index for reading note table.
 	private Note nextNote;			// The next note that would appear.
 
-	private float BPM = 140f;		// The BPM of the song
+	private float BPM = GameConfig.songBPM;		// The BPM of the song
 	private float beatTime;			// Realtime interval of single beat
 
 	private bool noteTableEnds = false;	// Indicate that there is no more note to read.
