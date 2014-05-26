@@ -11,6 +11,12 @@ public class GameConfig : MonoBehaviour
 	public static int numOfTapNotes	= 9;
 	public static float songBPM		= 140f;
 
+	/* The type of notes */
+	public enum NoteTypes {
+		CLICK = 0,
+		HOLD
+	};
+
 	/* Sprites */
 	public static int clickNoteSpriteLength = 26;	// Hard coding...
 
