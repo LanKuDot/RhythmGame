@@ -68,7 +68,7 @@ public class PrepareNote : MonoBehaviour
 	// OnDisable() is called when the game object becomes inactive.
 	void OnDisable()
 	{
-		Grader.Instance.grading( position_ID, index );
+		Grader.Instance.grading( position_ID, GameConfig.NoteTypes.CLICK ,index );
 		// Reset index to 0
 		index = 0;
 		/* Set the render frame to 0.

@@ -23,7 +23,8 @@ public class Grader : MonoBehaviour
 		BAD,
 		EARLY,
 		PERFECT,
-		LATE
+		LATE,
+		DISCARD		// Discarding initialzation judging
 	};
 
 	void Awake()
@@ -69,39 +70,84 @@ public class Grader : MonoBehaviour
 	 * to grade. After finished grading, the grade will be shown at the
 	 * corresponding position.
 	 */
-	public void grading( int position_ID, int stopFrame )
+	public void grading( int position_ID, GameConfig.NoteTypes whichNote, int stopFrame )
 	{
 		gradeLevel level = gradeLevel.MISS;
 
-		/* Grading, displaying the grade, and updating the score. */
+		/* Grading for specific note */
+		if ( whichNote == GameConfig.NoteTypes.CLICK )
+			level = gradingClick( stopFrame );
+
+		/* Display the grade */
+		switch( level )
+		{
+		case gradeLevel.BAD:
+			gradeText_GUI[ position_ID ].guiText.text = "BAD";
+			break;
+		case gradeLevel.EARLY:
+			gradeText_GUI[ position_ID ].guiText.text = "EARLY";
+			break;
+		case gradeLevel.LATE:
+			gradeText_GUI[ position_ID ].guiText.text = "LATE";
+			break;
+		case gradeLevel.MISS:
+			gradeText_GUI[ position_ID ].guiText.text = "MISS";
+			break;
+		case gradeLevel.PERFECT:
+			gradeText_GUI[ position_ID ].guiText.text = "PERFECT";
+			break;
+		}
+
+		/* Combo counting and display */
+		// If the grade is BAD, MISS, or DISCARD, reset the combo count.
+		if ( level == gradeLevel.BAD ||
+		    level == gradeLevel.MISS ||
+		    level == gradeLevel.DISCARD )
+		{
+			combos = 0;
+			comboText_GUI.guiText.text = "";
+		}
+		// Don't need to display the combo text when combo count less than 1.
+		else if ( combos == 0 )
+			++combos;
+		else
+		{
+			++combos;
+			comboText_GUI.guiText.text = combos + " combos";
+			// Combo bonus
+			Score.Instance.updateScore( 50 * combos );
+		}
+
+		// Reset showing tick after being tapped.
+		showing_tick[ position_ID ] = 0;
+	}
+
+	/* The grading of CLICK note */
+	gradeLevel gradingClick ( int stopFrame )
+	{
 		if ( stopFrame < GameConfig.click_BAD )
 		{
-			level = gradeLevel.BAD;
-			gradeText_GUI[ position_ID ].guiText.text = "BAD";
 			Score.Instance.updateScore( 100 );
+			return gradeLevel.BAD;
 		}
 		else if ( stopFrame < GameConfig.click_EARLY )
 		{
-			level = gradeLevel.EARLY;
-			gradeText_GUI[ position_ID ].guiText.text = "EARLY";
 			Score.Instance.updateScore( 400 );
+			return gradeLevel.EARLY;
 		}
 		else if ( stopFrame < GameConfig.click_PERFECT )
 		{
-			level = gradeLevel.PERFECT;
-			gradeText_GUI[ position_ID ].guiText.text = "PERFECT";
 			Score.Instance.updateScore( 600 );
+			return gradeLevel.PERFECT;
 		}
 		else if ( stopFrame < GameConfig.click_LATE )
 		{
-			level = gradeLevel.LATE;
-			gradeText_GUI[ position_ID ].guiText.text = "LATE";
 			Score.Instance.updateScore( 400 );
+			return gradeLevel.LATE;
 		}
 		else if ( stopFrame == GameConfig.click_MISS )
 		{
-			level = gradeLevel.MISS;
-			gradeText_GUI[ position_ID ].guiText.text = "MISS";
+			return gradeLevel.MISS;
 		}
 		/* stopFrame > 26?
 		 * To avoid grading the initialization of the PrepareNote, which
@@ -109,6 +155,8 @@ public class Grader : MonoBehaviour
 		 * call OnDisable() after finished initialization.
 		 * The Grader would discard this value in grading, and display nothing.
 		 */
+		return gradeLevel.DISCARD;
+	}
 
 		/* Combo counting and display */
 		if ( level == gradeLevel.BAD || level == gradeLevel.MISS )
