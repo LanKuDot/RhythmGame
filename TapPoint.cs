@@ -8,6 +8,7 @@ using System.Collections;
 public class TapPoint : MonoBehaviour
 {
 	private GameObject[] preNotes = new GameObject[4];	// Each TapPoint has 4 PrepareNote objects
+	public HoldNote holdNote;	// The direct reference to HoldNote
 	private string TPname;	// The name of TapPoints object
 	private int next;		// The index of the next PrepareNote would be waked up
 	private int waitTouch;	// The index of the PrepareNote that waiting for being touched
@@ -39,15 +40,22 @@ public class TapPoint : MonoBehaviour
 	 * Wake a PrepareNote which belongs to this TapPoint up.
 	 * The waked PrepareNote will play the animation.
 	 */
-	public void wakeUpPrepareNote()
+	public void wakeUpPrepareNote( GameConfig.NoteTypes type, int holdBeat )
 	{
-		/* The order of waking up is Up, Right, Down, Left, and back to Up again.
-		 */
-		// Wake up a PrepareNote
-		preNotes[ next ].SetActive( true );
-		// Update the index of next PrepareNote
-		++next;
-		next = next % preNotes.Length;
+		if ( type == GameConfig.NoteTypes.CLICK )
+		{
+			/* The order of waking up is Up, Right, Down, Left, and back to Up again. */
+			// Wake up a PrepareNote
+			preNotes[ next ].SetActive( true );
+			// Update the index of next PrepareNote
+			++next;
+			next = next % preNotes.Length;
+		}
+		else if ( type == GameConfig.NoteTypes.HOLD )
+		{
+			holdNote.gameObject.SetActive( true );
+			holdNote.setNewHoldBeats( holdBeat );
+		}
 	}
 	
 	/* Be called from TouchingEvent.checkTouch() if the TouchingEvent

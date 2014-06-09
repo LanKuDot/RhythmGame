@@ -14,14 +14,18 @@ public class NoteBank : MonoBehaviour
 	{
 		public int when;	// When to start
 		public int who;		// Who will get a note
+		public GameConfig.NoteTypes which;
+		public int howLong;
 		/* For example, who = 2 and when = 6 means
 		 * TapPoint no.2 wakes the PrepareNote at beat 6.
 		 */
 		// Constructor
-		public Note( int when, int who )
+		public Note( int when, int who, GameConfig.NoteTypes which, int howLong = 0 )
 		{
 			this.who = who;
 			this.when = when;
+			this.which = which;
+			this.howLong = howLong;
 		}
 	};
 
@@ -41,24 +45,21 @@ public class NoteBank : MonoBehaviour
 	// Note table: for SimpleBeats140
 	Note[] simpleBeats140 = {
 		/* How to create an array of struct with initial value like C lauguage... */
-		//	Note( when, who )
-		new Note( 3, 0 ),
-		new Note( 3, 2 ),
-		new Note( 4, 3 ),
-		new Note( 4, 5 ),
-		new Note( 5, 6 ),
-		new Note( 5, 8 ),
-		new Note( 7, 0 ),
-		new Note( 7, 1 ),
-		new Note( 8, 4 ),
-		new Note( 8, 5 ),
-		new Note( 9, 6 ),
-		new Note( 9, 7 ),
-		new Note( 11, 0 ),
-		new Note( 11, 2 ),
-		new Note( 12, 0 ),
-		new Note( 12, 2 ),
-		new Note( 7, 4 )	// Dummy Note
+		//	Note( when, who, which, howLong )
+		new Note( 3, 0, GameConfig.NoteTypes.CLICK ),
+		new Note( 4, 2, GameConfig.NoteTypes.CLICK ),
+		new Note( 5, 3, GameConfig.NoteTypes.HOLD, 2 ),
+		new Note( 6, 5, GameConfig.NoteTypes.HOLD, 4 ),
+		new Note( 7, 6, GameConfig.NoteTypes.CLICK ),
+		new Note( 8, 8, GameConfig.NoteTypes.CLICK ),
+		new Note( 9, 0, GameConfig.NoteTypes.CLICK ),
+		new Note( 10, 1, GameConfig.NoteTypes.CLICK ),
+		new Note( 11, 4, GameConfig.NoteTypes.CLICK ),
+		new Note( 12, 5, GameConfig.NoteTypes.CLICK ),
+		new Note( 14, 6, GameConfig.NoteTypes.CLICK ),
+		new Note( 16, 7, GameConfig.NoteTypes.CLICK ),
+		new Note( 18, 0, GameConfig.NoteTypes.CLICK ),
+		new Note( 7, 4, GameConfig.NoteTypes.CLICK )	// Dummy Note
 	};
 
 	// Use this for initialization
@@ -79,7 +80,7 @@ public class NoteBank : MonoBehaviour
 			while( !noteTableEnds && nextBeat == beatCounter )
 			{
 				// Tell the TapPoint to wake a PrepareNote up.
-				tapPoints[ nextNote.who ].wakeUpPrepareNote();
+				tapPoints[ nextNote.who ].wakeUpPrepareNote( nextNote.which, nextNote.howLong );
 				updateNote();
 			}
 		}
