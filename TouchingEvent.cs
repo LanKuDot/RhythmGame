@@ -38,6 +38,8 @@ public class TouchingEvent : MonoBehaviour
 		{
 			if ( Input.GetMouseButtonDown(0) )	// Left clicked
 				checkTouch( Input.mousePosition, TouchPhase.Began );
+			else if ( Input.GetMouseButtonUp(0) )	// End of left holding
+				checkTouch( Input.mousePosition, TouchPhase.Ended );
 		}
 	}	// end of Update()
 
@@ -62,6 +64,9 @@ public class TouchingEvent : MonoBehaviour
 			{
 			case TouchPhase.Began:
 				hit.transform.gameObject.SendMessage( "touched", null, SendMessageOptions.DontRequireReceiver );
+				break;
+			case TouchPhase.Ended:
+				hit.transform.gameObject.SendMessage( "touchEnded", null, SendMessageOptions.DontRequireReceiver );
 				break;
 			}
 		}
