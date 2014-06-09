@@ -18,6 +18,8 @@ public class HoldNote : MonoBehaviour {
 	private int touchBeganFrameIndex = 0;
 	private int touchEndedFrameIndex = 0;
 
+	private int position_ID;		// The index of the position of HoldNote
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -26,6 +28,11 @@ public class HoldNote : MonoBehaviour {
 		Time.fixedDeltaTime = ( float ) 60.0f * 2.0f / GameConfig.songBPM / GameConfig.holdNoteBeginFrames;
 		framesPerBeat = GameConfig.holdNoteBeginFrames / 2;
 		gotNewHoldTime = false;
+		// Setting position ID: "HoldNote_#"
+		position_ID = gameObject.name[9];
+		position_ID -= 48;
+		// Avoid the Grader grading after initialization.
+		touchEndedFrameIndex = GameConfig.holdNoteFrames + 10;
 		// Sleep after initialization
 		gameObject.SetActive( false );
 	}	// end of Start
@@ -103,6 +110,10 @@ public class HoldNote : MonoBehaviour {
 
 	void OnDisable()
 	{
+		// Grading when the object is unactive.
+		Grader.Instance.grading( position_ID, GameConfig.NoteTypes.HOLD, touchEndedFrameIndex );
+		Debug.Log( "Hold Stop Frame: " + touchEndedFrameIndex );
+		// Reset
 		gotNewHoldTime = false;
 		delaying = false;
 		index = 0;

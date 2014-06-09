@@ -21,7 +21,7 @@ public class GameConfig : MonoBehaviour
 	public static int clickNoteSpriteLength = 26;	// Hard coding...
 	public static int holdNoteBeginFrames = 19;
 	public static int holdNoteEndFrames = 18;
-	public static int holdNoteFrames = 36;
+	public static int holdNoteFrames = 37;
 
 	/* Grading */
 	// For click notes: the perfect timing is at frame no. 20
@@ -30,4 +30,8 @@ public class GameConfig : MonoBehaviour
 	public static int click_PERFECT	= 22;
 	public static int click_LATE	= 26;
 	public static int click_MISS	= 26;
+	// For hold notes:
+	public static int hold_BAD		= 26;
+	public static int hold_EARLY	= 32;
+	public static int hold_PERFECT	= 38;
 }	// end of class GameConfig

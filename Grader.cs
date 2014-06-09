@@ -77,6 +77,8 @@ public class Grader : MonoBehaviour
 		/* Grading for specific note */
 		if ( whichNote == GameConfig.NoteTypes.CLICK )
 			level = gradingClick( stopFrame );
+		else if ( whichNote == GameConfig.NoteTypes.HOLD )
+			level = gradingHold( stopFrame );
 
 		/* Display the grade */
 		switch( level )
@@ -158,25 +160,28 @@ public class Grader : MonoBehaviour
 		return gradeLevel.DISCARD;
 	}
 
-		/* Combo counting and display */
-		if ( level == gradeLevel.BAD || level == gradeLevel.MISS )
+	/* The grading of HOLD note */
+	gradeLevel gradingHold( int stopFrame )
+	{
+		if ( stopFrame == 0 )
+			return gradeLevel.MISS;
+		else if ( stopFrame < GameConfig.hold_BAD )
 		{
-			combos = 0;
-			comboText_GUI.guiText.text = "";
+			Score.Instance.updateScore( 200 );
+			return gradeLevel.BAD;
 		}
-		// Don't need to display the combo text when combo count less than 1.
-		else if ( combos == 0 )
-			++combos;
-		else
+		else if ( stopFrame < GameConfig.hold_EARLY )
 		{
-			++combos;
-			comboText_GUI.guiText.text = combos + " combos";
-			// Combo bonus
-			Score.Instance.updateScore( 50 * combos );
+			Score.Instance.updateScore( 500 );
+			return gradeLevel.EARLY;
+		}
+		else if ( stopFrame < GameConfig.hold_PERFECT )
+		{
+			Score.Instance.updateScore( 1000 );
+			return gradeLevel.PERFECT;
 		}
 
-		// Reset showing tick after being tapped.
-		showing_tick[ position_ID ] = 0;
+		return gradeLevel.DISCARD;
 	}
 
 }	// end of class Grader
