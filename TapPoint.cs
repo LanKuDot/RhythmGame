@@ -71,7 +71,7 @@ public class TapPoint : MonoBehaviour
 	void touched()
 	{
 		// waitTouch can't be more than or equal to next
-		if ( waitTouch != next )
+		if ( typeNow == GameConfig.NoteTypes.CLICK && waitTouch != next )
 		{
 			// Force a PrepareNote to sleep.
 			preNotes[waitTouch].SetActive( false );
@@ -79,5 +79,18 @@ public class TapPoint : MonoBehaviour
 			++waitTouch;
 			waitTouch = waitTouch % preNotes.Length;
 		}
+		else if ( typeNow == GameConfig.NoteTypes.HOLD )
+		{
+			holdNote.touched();
+		}
+	}
+
+	/* Be called from, TouchingEvent.checkTouch() if the mouse or finger
+	 * stopped holding down.
+	 */
+	void touchEnded()
+	{
+		if ( typeNow == GameConfig.NoteTypes.HOLD )
+			holdNote.touchEnded();
 	}
 }	// end of class TapPoint

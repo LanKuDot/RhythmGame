@@ -14,6 +14,9 @@ public class HoldNote : MonoBehaviour {
 	private int framesPerBeat;		// The number of frames per beat
 	private int index;				// The index of frame
 	private int delayFrames = 0;	// The frames delayed
+	private int realFrames = 0;		// The frames that the hold note passed
+	private int touchBeganFrameIndex = 0;
+	private int touchEndedFrameIndex = 0;
 
 	// Use this for initialization
 	void Start ()
@@ -32,12 +35,21 @@ public class HoldNote : MonoBehaviour {
 		// Wait until getting the new value of holding time
 		if ( gotNewHoldTime )
 		{
+			++realFrames;
+			// If 5 frames after the hint ended and still untouched, then sleep.
+			if ( realFrames == GameConfig.holdNoteBeginFrames + 5 &&
+			    touchBeganFrameIndex == 0 )
+				gameObject.SetActive( false );
+
 			// ....
 			if ( !delaying )
 			{
 				++index;
 				if ( index == GameConfig.holdNoteFrames )
+				{
+					touchEndedFrameIndex = index;	// Record the ended frame
 					gameObject.SetActive( false );
+				}
 
 				spriteRenderer.sprite = sprites[ index ];
 
@@ -63,12 +75,41 @@ public class HoldNote : MonoBehaviour {
 		gotNewHoldTime = true;
 	}
 
+	/* Be called from TapPoint.touched().
+	 * Record the touching starting frame.
+	 */
+	public void touched()
+	{
+		touchBeganFrameIndex = realFrames;
+	}
+
+	/* Be called from TapPoing.touchEnded().
+	 * Record the touching ending frame.
+	 */
+	public void touchEnded()
+	{
+		if ( index > GameConfig.holdNoteBeginFrames - 1 )
+		{
+			touchEndedFrameIndex = index;
+			gameObject.SetActive( false );
+		}
+		else
+			/* If the touching ended before the hold starting,
+			 * the touching is invaild, and then discard the
+			 * touching record.
+			 */
+			touchBeganFrameIndex = 0;
+	}
+
 	void OnDisable()
 	{
 		gotNewHoldTime = false;
 		delaying = false;
-		// Reset
 		index = 0;
+		delayFrames = 0;
+		realFrames = 0;
+		touchBeganFrameIndex = 0;
+		touchEndedFrameIndex = 0;
 		spriteRenderer.sprite = sprites[ index ];
 	}
 
