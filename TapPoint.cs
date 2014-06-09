@@ -12,6 +12,7 @@ public class TapPoint : MonoBehaviour
 	private string TPname;	// The name of TapPoints object
 	private int next;		// The index of the next PrepareNote would be waked up
 	private int waitTouch;	// The index of the PrepareNote that waiting for being touched
+	private GameConfig.NoteTypes typeNow;	// The type of next note.
 	
 	// Awake() is called before Start()
 	void Awake()
@@ -42,6 +43,8 @@ public class TapPoint : MonoBehaviour
 	 */
 	public void wakeUpPrepareNote( GameConfig.NoteTypes type, int holdBeat )
 	{
+		typeNow = type;	// Update the type of the next note
+
 		if ( type == GameConfig.NoteTypes.CLICK )
 		{
 			/* The order of waking up is Up, Right, Down, Left, and back to Up again. */
