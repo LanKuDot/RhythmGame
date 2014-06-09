@@ -32,17 +32,17 @@ public class TouchingEvent : MonoBehaviour
 		{
 			if ( Input.touchCount > 0 )		// Someone touched.
 				if ( Input.GetTouch(0).phase == TouchPhase.Began )
-					checkTouch( Input.GetTouch(0).position );
+					checkTouch( Input.GetTouch(0).position, TouchPhase.Began );
 		}	// end of if ( isTouchingDevice )
 		else
 		{
 			if ( Input.GetMouseButtonDown(0) )	// Left clicked
-				checkTouch( Input.mousePosition );
+				checkTouch( Input.mousePosition, TouchPhase.Began );
 		}
 	}	// end of Update()
 
 	// Checking if the touching point is overlapping TapPoints.
-	void checkTouch( Vector2 pos )
+	void checkTouch( Vector2 pos, TouchPhase touchState )
 	{
 		// Transform the screen position to world ( real ) position.
 		Vector3 worldPoint = Camera.main.ScreenToWorldPoint( pos );
@@ -58,7 +58,12 @@ public class TouchingEvent : MonoBehaviour
 		{
 			Debug.Log ( hit.transform.gameObject.name );
 			// Send message to the touched object to run function "touched"
-			hit.transform.gameObject.SendMessage( "touched", null, SendMessageOptions.DontRequireReceiver );
+			switch ( touchState )
+			{
+			case TouchPhase.Began:
+				hit.transform.gameObject.SendMessage( "touched", null, SendMessageOptions.DontRequireReceiver );
+				break;
+			}
 		}
 	}
 
