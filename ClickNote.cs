@@ -5,7 +5,7 @@
  * 2. Sleeping until waked by TapPoint, and then playing the animation.
  * 3. If the animation ends, sleep.
  * 4. Goto 2.
- * - To increase the performance of the PrepareNote,
+ * - To increase the performance of the ClickNote,
  * the frame of PrepareNote would update every fixed time interval,
  * not busy calling.
  * Hence, using FixedUpdate() instead of Update().
@@ -13,7 +13,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class PrepareNote : MonoBehaviour
+public class ClickNote : MonoBehaviour
 {
 	public Sprite[] sprites;	// Array storing all frames of prepareNote
 	private SpriteRenderer spriteRenderer;
