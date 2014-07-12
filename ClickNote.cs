@@ -23,6 +23,7 @@ public class ClickNote : MonoBehaviour
 	private int totalFrames;		// = rotatingFrame + delayingFrame
 	private int index;				// The index of frame
 	private int position_ID;		// The index of the position of PrepareNotes
+	private Color color;			// The color setting of the renderer
 
 	// Use this for initialization
 	void Start ()
@@ -44,6 +45,9 @@ public class ClickNote : MonoBehaviour
 		 */
 		index = 70;
 
+		// Get the color setting of the renderer and initialize the alpha to 0
+		color = spriteRenderer.material.color;
+
 		// Setting position ID
 		position_ID = gameObject.name[12];
 		position_ID -= 48;
@@ -62,6 +66,13 @@ public class ClickNote : MonoBehaviour
 		if ( index < rotatingFrames )
 			spriteRenderer.transform.Rotate( Vector3.forward * degreePerFrame );
 
+		// Fade in effect
+		if ( color.a != 1.0f )
+		{
+			color.a += 0.1f;
+			spriteRenderer.material.color = color;
+		}
+
 		++index;
 		// If the animation ends, sleep.
 		if ( index == totalFrames )
@@ -75,6 +86,9 @@ public class ClickNote : MonoBehaviour
 		// Reset index to 0 and the start angle of the ClickNote
 		index = 0;
 		spriteRenderer.transform.Rotate( Vector3.back * 90 );
+		// Reset alpha value
+		color.a = 0.0f;
+		spriteRenderer.material.color = color;
 	}
 
 }	// end of class PrepareNote
