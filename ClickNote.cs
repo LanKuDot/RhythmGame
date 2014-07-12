@@ -54,6 +54,7 @@ public class ClickNote : MonoBehaviour
 		gameObject.SetActive( false );
 	}
 
+	/* Time.fixedDeltaTime is defined at NoteBank. */
 	void FixedUpdate ()
 	{
 		spriteRenderer.sprite = sprites[0];
@@ -71,7 +72,7 @@ public class ClickNote : MonoBehaviour
 	void OnDisable()
 	{
 		Grader.Instance.grading( position_ID, GameConfig.NoteTypes.CLICK, index );
-		// Reset index to 0 an the angle of the ClickNote
+		// Reset index to 0 and the start angle of the ClickNote
 		index = 0;
 		spriteRenderer.transform.Rotate( Vector3.back * 90 );
 	}
