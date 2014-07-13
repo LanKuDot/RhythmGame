@@ -14,7 +14,7 @@ public class HoldEndNote : MonoBehaviour
 	private Color color;			// The colot setting of the sprite
 
 	// Use this for initialization
-	void Start ()
+	void Awake ()
 	{
 		spriteRenderer = renderer as SpriteRenderer;
 		color = spriteRenderer.material.color;
