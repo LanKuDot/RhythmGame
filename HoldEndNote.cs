@@ -11,11 +11,13 @@ public class HoldEndNote : MonoBehaviour
 	private float degreePerFrame;	// The degree rotating per frame
 	private bool gotNewHoldTime;	// Dose it get the new holding time?
 	private int index;
+	private Color color;			// The colot setting of the sprite
 
 	// Use this for initialization
 	void Start ()
 	{
 		spriteRenderer = renderer as SpriteRenderer;
+		color = spriteRenderer.material.color;
 
 		// Rotate in 1 beat
 		rotatingFrames = ( int )GameConfig.framePerBeats;
@@ -34,6 +36,13 @@ public class HoldEndNote : MonoBehaviour
 			++index;
 			if ( index == totalFrames )
 				gameObject.SetActive( false );
+
+			// Fade-in effect
+			if ( color.a != 1.0f )
+			{
+				color.a += 0.1f;
+				spriteRenderer.material.color = color;
+			}
 
 			if ( index > delayingFrames )
 				spriteRenderer.transform.Rotate( Vector3.forward * degreePerFrame );
@@ -58,5 +67,6 @@ public class HoldEndNote : MonoBehaviour
 		gotNewHoldTime = false;
 		index = 0;
 		spriteRenderer.transform.Rotate( Vector3.back * 90 );
+		color.a = 0.0f;
 	}
 }

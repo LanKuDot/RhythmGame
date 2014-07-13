@@ -16,6 +16,7 @@ public class HoldNote : MonoBehaviour {
 	private int totalFrames;		// The number of frames the note existing
 	private int touchBeganFrameIndex = 0;
 	private int touchEndedFrameIndex = 0;
+	private Color color;			// The color setting of the sprite
 
 	private int position_ID;		// The index of the position of HoldNote
 
@@ -23,6 +24,7 @@ public class HoldNote : MonoBehaviour {
 	void Start ()
 	{
 		spriteRenderer = renderer as SpriteRenderer;
+		color = spriteRenderer.material.color;
 
 		// Hint for 2 beats
 		rotatingFrames = ( int )GameConfig.framePerBeats * 2;
@@ -54,6 +56,13 @@ public class HoldNote : MonoBehaviour {
 			// If the animation ended, sleep.
 			if ( index == totalFrames )
 				gameObject.SetActive( false );
+
+			// Fade-in effect
+			if ( color.a != 1.0f )
+			{
+				color.a += 0.1f;
+				spriteRenderer.material.color = color;
+			}
 
 			if ( index < rotatingFrames )
 				// Rotate the sprite counterclockwise
@@ -119,6 +128,7 @@ public class HoldNote : MonoBehaviour {
 		touchEndedFrameIndex = 0;
 		spriteRenderer.sprite = sprites[0];
 		spriteRenderer.transform.Rotate( Vector3.back * 90 );
+		color.a = 0.0f;
 	}
 
 }	// end of class HoldNote
