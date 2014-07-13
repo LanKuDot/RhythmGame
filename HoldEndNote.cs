@@ -51,9 +51,12 @@ public class HoldEndNote : MonoBehaviour
 		gotNewHoldTime = true;
 	}
 
+	/* Reset on disable */
 	void OnDisable()
 	{
+		// Reset
 		gotNewHoldTime = false;
 		index = 0;
+		spriteRenderer.transform.Rotate( Vector3.back * 90 );
 	}
 }

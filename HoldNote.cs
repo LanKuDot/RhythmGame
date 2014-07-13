@@ -118,6 +118,7 @@ public class HoldNote : MonoBehaviour {
 		touchBeganFrameIndex = 0;
 		touchEndedFrameIndex = 0;
 		spriteRenderer.sprite = sprites[0];
+		spriteRenderer.transform.Rotate( Vector3.back * 90 );
 	}
 
 }	// end of class HoldNote
