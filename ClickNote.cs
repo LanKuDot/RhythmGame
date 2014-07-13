@@ -43,7 +43,7 @@ public class ClickNote : MonoBehaviour
 		 * which sends the stop frame to Grader, but there is no note assigned
 		 * to TapPoint at initialization. The Grader will discard the invaild value.
 		 */
-		index = 70;
+		index = 9999;
 
 		// Get the color setting of the renderer and initialize the alpha to 0
 		color = spriteRenderer.material.color;
@@ -79,10 +79,26 @@ public class ClickNote : MonoBehaviour
 			gameObject.SetActive( false );
 	}
 
-	// OnDisable() is called when the game object becomes inactive.
+	/* Send the grade to the grader, and reset the arguments.
+	 */
 	void OnDisable()
 	{
-		Grader.Instance.grading( position_ID, GameConfig.NoteTypes.CLICK, index );
+		// Grading
+		Grader.gradeLevel level;
+		if ( index < 40 )
+			level = Grader.gradeLevel.BAD;
+		else if ( index < 44 )
+			level = Grader.gradeLevel.EARLY;
+		else if ( index < 51 )
+			level = Grader.gradeLevel.PERFECT;
+		else if ( index < totalFrames - 1 )
+			level = Grader.gradeLevel.LATE;
+		else if ( index == totalFrames )
+			level = Grader.gradeLevel.MISS;
+		else
+			level = Grader.gradeLevel.DISCARD;
+		Grader.Instance.grading( position_ID, GameConfig.NoteTypes.CLICK, level );
+
 		// Reset index to 0 and the start angle of the ClickNote
 		index = 0;
 		spriteRenderer.transform.Rotate( Vector3.back * 90 );

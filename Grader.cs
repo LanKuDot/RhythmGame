@@ -9,16 +9,14 @@ using System.Collections;
 
 public class Grader : MonoBehaviour
 {
-	private GameObject[] gradeText_GUI
-		= new GameObject[GameConfig.numOfTapNotes];
+	private GameObject[] gradeText_GUI = new GameObject[GameConfig.numOfTapNotes];
 	private GameObject comboText_GUI;
-	private int[] showing_tick
-		= new int[GameConfig.numOfTapNotes];	// Record the displaying time of text
+	private int[] showing_tick = new int[GameConfig.numOfTapNotes];	// Record the displaying time of text
 	private int combos;
 	/* Make Grader.grading() could be called directly. */
 	public static Grader Instance;
 
-	enum gradeLevel {
+	public enum gradeLevel {
 		MISS = 0,
 		BAD,
 		EARLY,
@@ -45,11 +43,10 @@ public class Grader : MonoBehaviour
 	{
 		combos = 0;
 		comboText_GUI.guiText.text = " ";
-		// Hard coding...
-		Time.fixedDeltaTime = 0.040816f;
 	}
 
-	/* Counting the showing_tick of the gradeGUIs.
+	/* Time.fixedDeltaTime is defined at the NoteBank
+	 * Counting the showing_tick of the gradeGUIs.
 	 * Make gradeGUIs showing the grade in certain time interval.
 	 */
 	void FixedUpdate()
@@ -57,7 +54,7 @@ public class Grader : MonoBehaviour
 		for ( int i = 0; i < GameConfig.numOfTapNotes; ++i )
 		{
 			++showing_tick[i];
-			if ( showing_tick[i] > 10 )
+			if ( showing_tick[i] > 30 )
 			{
 				gradeText_GUI[i].guiText.text = " ";
 				showing_tick[i] = 0;
@@ -65,20 +62,17 @@ public class Grader : MonoBehaviour
 		}
 	}
 
-	/* Called from PrepareNote.OnDisable().
-	 * When a PrepareNote is inactive, it sends the stop frame to Grader
-	 * to grade. After finished grading, the grade will be shown at the
-	 * corresponding position.
+	/* Called by [PrepareNote].OnDisable().
+	 * Get the grade level from the notes and calculate the score.
+	 * Then display the result.
 	 */
-	public void grading( int position_ID, GameConfig.NoteTypes whichNote, int stopFrame )
+	public void grading( int position_ID, GameConfig.NoteTypes whichNote, gradeLevel level )
 	{
-		gradeLevel level = gradeLevel.MISS;
-
 		/* Grading for specific note */
 		if ( whichNote == GameConfig.NoteTypes.CLICK )
-			level = gradingClick( stopFrame );
+			gradingClick( level );
 		else if ( whichNote == GameConfig.NoteTypes.HOLD )
-			level = gradingHold( stopFrame );
+			gradingHold( level );
 
 		/* Display the grade */
 		switch( level )
@@ -97,6 +91,9 @@ public class Grader : MonoBehaviour
 			break;
 		case gradeLevel.PERFECT:
 			gradeText_GUI[ position_ID ].guiText.text = "PERFECT";
+			break;
+		case gradeLevel.DISCARD:
+			gradeText_GUI[ position_ID ].guiText.text = " ";
 			break;
 		}
 
@@ -125,63 +122,40 @@ public class Grader : MonoBehaviour
 	}
 
 	/* The grading of CLICK note */
-	gradeLevel gradingClick ( int stopFrame )
+	void gradingClick ( gradeLevel level )
 	{
-		if ( stopFrame < GameConfig.click_BAD )
+		switch ( level )
 		{
+		case gradeLevel.BAD:
 			Score.Instance.updateScore( 100 );
-			return gradeLevel.BAD;
-		}
-		else if ( stopFrame < GameConfig.click_EARLY )
-		{
+			break;
+		case gradeLevel.EARLY:
 			Score.Instance.updateScore( 400 );
-			return gradeLevel.EARLY;
-		}
-		else if ( stopFrame < GameConfig.click_PERFECT )
-		{
+			break;
+		case gradeLevel.PERFECT:
 			Score.Instance.updateScore( 600 );
-			return gradeLevel.PERFECT;
-		}
-		else if ( stopFrame < GameConfig.click_LATE )
-		{
+			break;
+		case gradeLevel.LATE:
 			Score.Instance.updateScore( 400 );
-			return gradeLevel.LATE;
+			break;
 		}
-		else if ( stopFrame == GameConfig.click_MISS )
-		{
-			return gradeLevel.MISS;
-		}
-		/* stopFrame > 26?
-		 * To avoid grading the initialization of the PrepareNote, which
-		 * will set the initial index to be "sprites.Length + 10" and
-		 * call OnDisable() after finished initialization.
-		 * The Grader would discard this value in grading, and display nothing.
-		 */
-		return gradeLevel.DISCARD;
 	}
 
 	/* The grading of HOLD note */
-	gradeLevel gradingHold( int stopFrame )
+	void gradingHold( gradeLevel level )
 	{
-		if ( stopFrame == 0 )
-			return gradeLevel.MISS;
-		else if ( stopFrame < GameConfig.hold_BAD )
+		switch ( level )
 		{
+		case gradeLevel.BAD:
 			Score.Instance.updateScore( 200 );
-			return gradeLevel.BAD;
-		}
-		else if ( stopFrame < GameConfig.hold_EARLY )
-		{
+			break;
+		case gradeLevel.EARLY:
 			Score.Instance.updateScore( 500 );
-			return gradeLevel.EARLY;
-		}
-		else if ( stopFrame < GameConfig.hold_PERFECT )
-		{
+			break;
+		case gradeLevel.PERFECT:
 			Score.Instance.updateScore( 1000 );
-			return gradeLevel.PERFECT;
+			break;
 		}
-
-		return gradeLevel.DISCARD;
 	}
 
 }	// end of class Grader

@@ -15,7 +15,6 @@ public class HoldNote : MonoBehaviour {
 	private float degreePerFrame;	// The rotating degree per frame
 	private int totalFrames;		// The number of frames the note existing
 	private int touchBeganFrameIndex = 0;
-	private int touchEndedFrameIndex = 0;
 	private Color color;			// The color setting of the sprite
 
 	private int position_ID;		// The index of the position of HoldNote
@@ -38,7 +37,8 @@ public class HoldNote : MonoBehaviour {
 
 		// Avoid the Grader grading after initialization.
 		// By assigning an invalid value.
-		touchEndedFrameIndex = -1;
+		touchBeganFrameIndex = 999999;
+		index = 999999;
 
 		// Sleep after initialization
 		gameObject.SetActive( false );
@@ -67,6 +67,11 @@ public class HoldNote : MonoBehaviour {
 			if ( index < rotatingFrames )
 				// Rotate the sprite counterclockwise
 				spriteRenderer.transform.Rotate( Vector3.forward * degreePerFrame );
+			else if ( index == rotatingFrames + 20 )
+			{
+				if ( touchBeganFrameIndex == 0 )
+					gameObject.SetActive( false );
+			}
 		}
 	}	// end of FixedUpdate
 
@@ -99,11 +104,8 @@ public class HoldNote : MonoBehaviour {
 	 */
 	public void touchEnded()
 	{
-		if ( index > GameConfig.holdNoteBeginFrames - 1 )
-		{
-			touchEndedFrameIndex = index;
+		if ( index > rotatingFrames )
 			gameObject.SetActive( false );
-		}
 		else
 			/* If the touching ended before the hold starting,
 			 * the touching is invaild, and then discard the
@@ -118,14 +120,24 @@ public class HoldNote : MonoBehaviour {
 		if ( holdEndNote.gameObject.activeSelf )
 			holdEndNote.gameObject.SetActive( false );
 
-		// Grading when the object is unactive.
-		Grader.Instance.grading( position_ID, GameConfig.NoteTypes.HOLD, touchEndedFrameIndex );
+		// Grading
+		Grader.gradeLevel level;
+		if ( touchBeganFrameIndex == 0 )
+			level = Grader.gradeLevel.MISS;
+		else if ( index < totalFrames - 8 )
+			level = Grader.gradeLevel.BAD;
+		else if ( index < totalFrames - 3 )
+			level = Grader.gradeLevel.EARLY;
+		else if ( index < totalFrames + 1 )
+			level = Grader.gradeLevel.PERFECT;
+		else
+			level = Grader.gradeLevel.DISCARD;
+		Grader.Instance.grading( position_ID, GameConfig.NoteTypes.HOLD, level );
 
 		// Reset
 		gotNewHoldTime = false;
 		index = 0;
 		touchBeganFrameIndex = 0;
-		touchEndedFrameIndex = 0;
 		spriteRenderer.sprite = sprites[0];
 		spriteRenderer.transform.Rotate( Vector3.back * 90 );
 		color.a = 0.0f;
