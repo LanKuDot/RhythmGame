@@ -66,7 +66,7 @@ public class HoldEndNote : MonoBehaviour
 		// Reset
 		gotNewHoldTime = false;
 		index = 0;
-		spriteRenderer.transform.Rotate( Vector3.back * 90 );
+		spriteRenderer.transform.eulerAngles = new Vector3( 0.0f, 0.0f, 90.0f );
 		color.a = 0.0f;
 	}
 }

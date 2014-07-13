@@ -52,8 +52,6 @@ public class ClickNote : MonoBehaviour
 		position_ID = gameObject.name[12];
 		position_ID -= 48;
 
-		spriteRenderer.transform.Rotate( Vector3.back * 90 );
-
 		// Sleeping after initializing.
 		gameObject.SetActive( false );
 	}
@@ -101,7 +99,7 @@ public class ClickNote : MonoBehaviour
 
 		// Reset index to 0 and the start angle of the ClickNote
 		index = 0;
-		spriteRenderer.transform.Rotate( Vector3.back * 90 );
+		spriteRenderer.transform.eulerAngles = new Vector3( 0.0f, 0.0f, 0.0f );
 		// Reset alpha value
 		color.a = 0.0f;
 		spriteRenderer.material.color = color;
