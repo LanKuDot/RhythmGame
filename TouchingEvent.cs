@@ -31,8 +31,17 @@ public class TouchingEvent : MonoBehaviour
 		if ( isTouchingDevice )
 		{
 			if ( Input.touchCount > 0 )		// Someone touched.
-				if ( Input.GetTouch(0).phase == TouchPhase.Began )
-					checkTouch( Input.GetTouch(0).position, TouchPhase.Began );
+			{
+				int totalTouch = Input.touchCount;
+				// Scan all touch point
+				for ( int i = 0; i < totalTouch; ++i )
+				{
+					if ( Input.GetTouch(i).phase == TouchPhase.Began )
+						checkTouch( Input.GetTouch(i).position, TouchPhase.Began );
+					else if ( Input.GetTouch (i).phase == TouchPhase.Ended )
+						checkTouch( Input.GetTouch(i).position, TouchPhase.Ended );
+				}
+			}
 		}	// end of if ( isTouchingDevice )
 		else
 		{
