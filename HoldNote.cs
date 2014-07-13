@@ -9,12 +9,11 @@ public class HoldNote : MonoBehaviour {
 	public Sprite[] sprites;
 	private SpriteRenderer spriteRenderer;
 	private bool gotNewHoldTime;	// Does it get the new holding beats from TapPoint?
-	private bool delaying = false;
-	private int holdBeats = 0;		// The holding beats
-	private int framesPerBeat;		// The number of frames per beat
 	private int index;				// The index of frame
-	private int delayFrames = 0;	// The frames delayed
-	private int realFrames = 0;		// The frames that the hold note passed
+	private int holdBeats = 0;		// The holding beats
+	private int rotatingFrames;		// The number of frames in rotating
+	private float degreePerFrame;	// The rotating degree per frame
+	private int totalFrames;		// The number of frames the note existing
 	private int touchBeganFrameIndex = 0;
 	private int touchEndedFrameIndex = 0;
 
@@ -24,61 +23,52 @@ public class HoldNote : MonoBehaviour {
 	void Start ()
 	{
 		spriteRenderer = renderer as SpriteRenderer;
-		// From hint starting to perfect holding starting time would be displayed in 2 beats.
-		Time.fixedDeltaTime = ( float ) 60.0f * 2.0f / GameConfig.songBPM / GameConfig.holdNoteBeginFrames;
-		framesPerBeat = GameConfig.holdNoteBeginFrames / 2;
+
+		// Hint for 2 beats
+		rotatingFrames = ( int )GameConfig.framePerBeats * 2;
+		degreePerFrame = 90.0f / ( float ) rotatingFrames;
+
 		gotNewHoldTime = false;
-		// Setting position ID: "HoldNote_#"
+
+		// Set position ID: "HoldNote_#"
 		position_ID = gameObject.name[9];
 		position_ID -= 48;
+
 		// Avoid the Grader grading after initialization.
-		touchEndedFrameIndex = GameConfig.holdNoteFrames + 10;
+		// By assigning an invalid value.
+		touchEndedFrameIndex = -1;
+
 		// Sleep after initialization
 		gameObject.SetActive( false );
 	}	// end of Start
 
+	/* Time.fixedDeltaTime is defined at NoteBank */
 	void FixedUpdate()
 	{
-		// Wait until getting the new value of holding time
+		// Wait until get the new holding beats
 		if ( gotNewHoldTime )
 		{
-			++realFrames;
-			// If 5 frames after the hint ended and still untouched, then sleep.
-			if ( realFrames == GameConfig.holdNoteBeginFrames + 5 &&
-			    touchBeganFrameIndex == 0 )
+			spriteRenderer.sprite = sprites[0];
+
+			++index;
+			// If the animation ended, sleep.
+			if ( index == totalFrames )
 				gameObject.SetActive( false );
 
-			// ....
-			if ( !delaying )
-			{
-				++index;
-				if ( index == GameConfig.holdNoteFrames )
-				{
-					touchEndedFrameIndex = index;	// Record the ended frame
-					gameObject.SetActive( false );
-				}
-
-				spriteRenderer.sprite = sprites[ index ];
-
-				if ( index == GameConfig.holdNoteBeginFrames - 1 )
-					delaying = true;
-			}
-			else 	// Delaying
-			{
-				++delayFrames;
-				if ( delayFrames / framesPerBeat == ( holdBeats - 2 ) )
-				{
-					+++index;
-					spriteRenderer.sprite = sprites[ index ];
-					delaying = false;
-				}
-			}
+			if ( index < rotatingFrames )
+				// Rotate the sprite counterclockwise
+				spriteRenderer.transform.Rotate( Vector3.forward * degreePerFrame );
 		}
 	}	// end of FixedUpdate
 
-	public void setNewHoldBeats( int newValue )
+	/* Be called at TapPoint.wakeUpPrepareNote().
+	 * Get the duration of the holding beats from TapPoint.
+	 * And calculate the frames. */
+	public void setNewHoldBeats( int holdBeats )
 	{
-		holdBeats = newValue;
+		// Rotating frames ( Preparing ) plus staying frames ( Holding )
+		totalFrames = ( int )GameConfig.framePerBeats * holdBeats;
+		totalFrames += rotatingFrames;
 		gotNewHoldTime = true;
 	}
 
@@ -87,7 +77,7 @@ public class HoldNote : MonoBehaviour {
 	 */
 	public void touched()
 	{
-		touchBeganFrameIndex = realFrames;
+		touchBeganFrameIndex = index;
 	}
 
 	/* Be called from TapPoing.touchEnded().
@@ -112,16 +102,12 @@ public class HoldNote : MonoBehaviour {
 	{
 		// Grading when the object is unactive.
 		Grader.Instance.grading( position_ID, GameConfig.NoteTypes.HOLD, touchEndedFrameIndex );
-		Debug.Log( "Hold Stop Frame: " + touchEndedFrameIndex );
 		// Reset
 		gotNewHoldTime = false;
-		delaying = false;
 		index = 0;
-		delayFrames = 0;
-		realFrames = 0;
 		touchBeganFrameIndex = 0;
 		touchEndedFrameIndex = 0;
-		spriteRenderer.sprite = sprites[ index ];
+		spriteRenderer.sprite = sprites[0];
 	}
 
 }	// end of class HoldNote
