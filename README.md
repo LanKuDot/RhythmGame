@@ -2,11 +2,10 @@
 
 ## Version History ##
 
-### Alpha 1.0 ###
-- Date: 2014/05/12
+### Alpha 1.1 ###
+- Date: 2014/07/14
 - Updates:
-	- Simple song playing
-	- "Click" notes
-	- Grading the timing of tapping
-	- Counting combos
-	- Simple scoring forluma
+	- Add "Hold" Note
+	- Play the animation using Unity3D defined function
+	  instead of predefined frames
+	- Multi touch detection on Android device
