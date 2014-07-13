@@ -8,9 +8,9 @@ public class HoldNote : MonoBehaviour {
 
 	public Sprite[] sprites;
 	private SpriteRenderer spriteRenderer;
+	public HoldEndNote holdEndNote;
 	private bool gotNewHoldTime;	// Does it get the new holding beats from TapPoint?
 	private int index;				// The index of frame
-	private int holdBeats = 0;		// The holding beats
 	private int rotatingFrames;		// The number of frames in rotating
 	private float degreePerFrame;	// The rotating degree per frame
 	private int totalFrames;		// The number of frames the note existing
@@ -62,14 +62,19 @@ public class HoldNote : MonoBehaviour {
 	}	// end of FixedUpdate
 
 	/* Be called at TapPoint.wakeUpPrepareNote().
-	 * Get the duration of the holding beats from TapPoint.
-	 * And calculate the frames. */
+	 * Get the duration of the holding beats from TapPoint, and calculate the frames.
+	 * Wake up a HoldEndNote, and send the total displaying frames to it.
+	 */
 	public void setNewHoldBeats( int holdBeats )
 	{
 		// Rotating frames ( Preparing ) plus staying frames ( Holding )
 		totalFrames = ( int )GameConfig.framePerBeats * holdBeats;
 		totalFrames += rotatingFrames;
 		gotNewHoldTime = true;
+
+		// Wake up holdEndNote
+		holdEndNote.gameObject.SetActive( true );
+		holdEndNote.setHoldingFrames( totalFrames );
 	}
 
 	/* Be called from TapPoint.touched().
@@ -100,8 +105,13 @@ public class HoldNote : MonoBehaviour {
 
 	void OnDisable()
 	{
+		// Also sleep the holdEndNote
+		if ( holdEndNote.gameObject.activeSelf )
+			holdEndNote.gameObject.SetActive( false );
+
 		// Grading when the object is unactive.
 		Grader.Instance.grading( position_ID, GameConfig.NoteTypes.HOLD, touchEndedFrameIndex );
+
 		// Reset
 		gotNewHoldTime = false;
 		index = 0;
