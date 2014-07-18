@@ -23,7 +23,7 @@ public class NoteBank : MonoBehaviour
 		public Note( int when, int who, GameConfig.NoteTypes which, int howLong = 0 )
 		{
 			this.who = who;
-			this.when = when;
+			this.when = when - 2;	// Each Note has 2 beats to prepare
 			this.which = which;
 			this.howLong = howLong;
 		}
@@ -42,24 +42,83 @@ public class NoteBank : MonoBehaviour
 
 	private bool noteTableEnds = false;	// Indicate that there is no more note to read.
 
+	// Alias of the type of note
+	private static GameConfig.NoteTypes CLICK = GameConfig.NoteTypes.CLICK;
+	private static GameConfig.NoteTypes HOLD = GameConfig.NoteTypes.HOLD;
+
 	// Note table: for SimpleBeats140
 	Note[] simpleBeats140 = {
 		/* How to create an array of struct with initial value like C lauguage... */
 		//	Note( when, who, which, howLong )
-		new Note( 3, 0, GameConfig.NoteTypes.CLICK ),
-		new Note( 4, 2, GameConfig.NoteTypes.CLICK ),
-		new Note( 5, 3, GameConfig.NoteTypes.HOLD, 2 ),
-		new Note( 6, 5, GameConfig.NoteTypes.HOLD, 4 ),
-		new Note( 7, 6, GameConfig.NoteTypes.CLICK ),
-		new Note( 8, 8, GameConfig.NoteTypes.CLICK ),
-		new Note( 9, 0, GameConfig.NoteTypes.CLICK ),
-		new Note( 10, 1, GameConfig.NoteTypes.CLICK ),
-		new Note( 11, 4, GameConfig.NoteTypes.CLICK ),
-		new Note( 12, 5, GameConfig.NoteTypes.CLICK ),
-		new Note( 14, 6, GameConfig.NoteTypes.CLICK ),
-		new Note( 16, 7, GameConfig.NoteTypes.CLICK ),
-		new Note( 18, 0, GameConfig.NoteTypes.CLICK ),
-		new Note( 7, 4, GameConfig.NoteTypes.CLICK )	// Dummy Note
+		new Note( 6, 3, CLICK ),
+		new Note( 6, 5, CLICK ),
+		new Note( 12, 0, CLICK ),
+		new Note( 12, 2, CLICK ),
+		new Note( 14, 6, CLICK ),
+		new Note( 14, 8, CLICK ),
+		new Note( 16, 0, CLICK ),
+		new Note( 17, 1, CLICK ),
+		new Note( 18, 2, CLICK ),
+		new Note( 19, 6, CLICK ),
+		new Note( 20, 7, CLICK ),
+		new Note( 21, 8, CLICK ),
+		new Note( 22, 3, CLICK ),
+		new Note( 22, 5, CLICK ),
+		new Note( 23, 0, CLICK ),
+		new Note( 24, 3, CLICK ),
+		new Note( 25, 6, CLICK ),
+		new Note( 26, 2, CLICK ),
+		new Note( 27, 5, CLICK ),
+		new Note( 28, 8, CLICK ),
+		new Note( 29, 4, HOLD, 1 ),
+		new Note( 30, 3, CLICK ),
+		new Note( 30, 5, CLICK ),
+		new Note( 32, 0, CLICK ),
+		new Note( 33, 4, CLICK ),
+		new Note( 34, 8, CLICK ),
+		new Note( 35, 2, CLICK ),
+		new Note( 36, 4, CLICK ),
+		new Note( 37, 6, CLICK ),
+		new Note( 38, 3, CLICK ),
+		new Note( 38, 5, CLICK ),
+		new Note( 39, 6, CLICK ),
+		new Note( 40, 4, CLICK ),
+		new Note( 41, 2, CLICK ),
+		new Note( 42, 8, CLICK ),
+		new Note( 43, 4, CLICK ),
+		new Note( 44, 0, CLICK ),
+		new Note( 46, 0, CLICK ),
+		new Note( 46, 2, CLICK ),
+		new Note( 47, 6, HOLD, 1 ),
+		new Note( 47, 8, HOLD, 1 ),
+		new Note( 50, 3, CLICK ),
+		new Note( 50, 5, CLICK ),
+		new Note( 51, 6, HOLD, 1 ),
+		new Note( 51, 8, HOLD, 1 ),
+		new Note( 54, 3, CLICK ),
+		new Note( 54, 5, CLICK ),
+		new Note( 55, 6, HOLD, 1 ),
+		new Note( 55, 8, HOLD, 1 ),
+		new Note( 58, 3, CLICK ),
+		new Note( 58, 5, CLICK ),
+		new Note( 59, 6, HOLD, 1 ),
+		new Note( 59, 8, HOLD, 1 ),
+		new Note( 65, 0, CLICK ),
+		new Note( 66, 2, CLICK ),
+		new Note( 67, 6, CLICK ),
+		new Note( 68, 8, CLICK ),
+		new Note( 70, 3, CLICK ),
+		new Note( 70, 5, CLICK ),
+		new Note( 73, 8, CLICK ),
+		new Note( 74, 6, CLICK ),
+		new Note( 75, 2, CLICK ),
+		new Note( 76, 0, CLICK ),
+		new Note( 78, 3, CLICK ),
+		new Note( 78, 5, CLICK ),
+		new Note( 80, 4, HOLD, 3 ),
+		new Note( 84, 3, CLICK ),
+		new Note( 84, 5, CLICK ),
+		new Note( 7, 4, CLICK )	// Dummy Note
 	};
 
 	// Use this for initialization
@@ -67,6 +126,8 @@ public class NoteBank : MonoBehaviour
 	{
 		// Calculate the real time interval of single beat
 		beatTime = 60f / BPM;
+		// Setting the time interval of each frame
+		Time.fixedDeltaTime = beatTime / GameConfig.framePerBeats;
 		// Get the first Note from note table
 		updateNote();
 	}
