@@ -4,6 +4,7 @@
  * - The beat counter.
  * - Assign notes to TapPoints.
  */
+
 using UnityEngine;
 using System.Collections;
 
@@ -15,10 +16,9 @@ public class NoteBank : MonoBehaviour
 		public int when;	// When to start
 		public int who;		// Who will get a note
 		public GameConfig.NoteTypes which;
-		public int howLong;
-		/* For example, who = 2 and when = 6 means
-		 * TapPoint no.2 wakes the PrepareNote at beat 6.
-		 */
+		public int howLong;	// For HoldNote: The holding time in beats
+							// For SlideNote: The destination note
+
 		// Constructor
 		public Note( int when, int who, GameConfig.NoteTypes which, int howLong = 0 )
 		{
@@ -31,6 +31,7 @@ public class NoteBank : MonoBehaviour
 
 	public TapPoint[] tapPoints
 		= new TapPoint[GameConfig.numOfTapNotes];	// Direct reference to all TapPoints
+	public SlideNoteBank slideNoteBank;		// Direct reference to SlideNoteBank to assign slide note
 
 	private int beatCounter = -1;	// The counter counts beats after the song start playing.
 	private int nextBeat = 0;		// The next beat that PrepareNote would appear.
@@ -45,19 +46,28 @@ public class NoteBank : MonoBehaviour
 	// Alias of the type of note
 	private static GameConfig.NoteTypes CLICK = GameConfig.NoteTypes.CLICK;
 	private static GameConfig.NoteTypes HOLD = GameConfig.NoteTypes.HOLD;
+	private static GameConfig.NoteTypes SLIDE = GameConfig.NoteTypes.SLIDE;
 
 	// Note table: for SimpleBeats140
 	Note[] simpleBeats140 = {
 		/* How to create an array of struct with initial value like C lauguage... */
 		//	Note( when, who, which, howLong )
-		new Note( 6, 3, CLICK ),
-		new Note( 6, 5, CLICK ),
+		new Note(  6, 3, CLICK ),
+		new Note(  6, 5, CLICK ),
+		new Note( 10, 1, SLIDE, 6 ),
+		new Note( 11, 6, SLIDE, 5 ),
 		new Note( 12, 0, CLICK ),
 		new Note( 12, 2, CLICK ),
+		new Note( 12, 5, SLIDE, 0 ),
+		new Note( 13, 0, SLIDE, 7 ),
+		new Note( 14, 7, SLIDE, 2 ),
 		new Note( 14, 6, CLICK ),
 		new Note( 14, 8, CLICK ),
+		new Note( 15, 2, SLIDE, 3 ),
 		new Note( 16, 0, CLICK ),
+		new Note( 16, 3, SLIDE, 8 ),
 		new Note( 17, 1, CLICK ),
+		new Note( 17, 8, SLIDE, 1 ),
 		new Note( 18, 2, CLICK ),
 		new Note( 19, 6, CLICK ),
 		new Note( 20, 7, CLICK ),
@@ -140,8 +150,14 @@ public class NoteBank : MonoBehaviour
 			++beatCounter;
 			while( !noteTableEnds && nextBeat == beatCounter )
 			{
+				if ( nextNote.which == SLIDE )
+				{
+					slideNoteBank.updateNote( nextNote.who, nextNote.howLong );
+				}
 				// Tell the TapPoint to wake a PrepareNote up.
-				tapPoints[ nextNote.who ].wakeUpPrepareNote( nextNote.which, nextNote.howLong );
+				else
+					tapPoints[ nextNote.who ].wakeUpPrepareNote( nextNote.which, nextNote.howLong );
+
 				updateNote();
 			}
 		}
