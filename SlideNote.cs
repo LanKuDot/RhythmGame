@@ -13,6 +13,7 @@ public class SlideNote : MonoBehaviour
 	private int index;
 	private int delayingFrames = 24;
 	private int delayedFrames;			// The counter for the delayed frames
+	private int waitingFrames;			// The waiting frames from waken up to playing animation
 
 	// Use this for initialization
 	void Start ()
@@ -28,17 +29,27 @@ public class SlideNote : MonoBehaviour
 	 */
 	void FixedUpdate ()
 	{
-		spriteRenderer.sprite = sprites[index];
-		++index;
-		if ( index == 47 )
+		if ( waitingFrames == 0 )
 		{
-			gameObject.SetActive( false );
+			spriteRenderer.sprite = sprites[index];
+			++index;
+			if ( index == 47 )
+			{
+				gameObject.SetActive( false );
+			}
+			if ( index == 24 && delayedFrames != delayingFrames )
+			{
+				--index;
+				++delayedFrames;
+			}
 		}
-		if ( index == 24 && delayedFrames != delayingFrames )
-		{
-			--index;
-			++delayedFrames;
-		}
+		else
+			--waitingFrames;
+	}
+
+	public void setWaitingFrames( int frames )
+	{
+		waitingFrames = frames;
 	}
 
 	/* Reset on disable */

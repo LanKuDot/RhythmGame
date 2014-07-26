@@ -14,6 +14,7 @@ public class NodeNote : MonoBehaviour
 	private int delayingFrames;		// The number of frames in delaying
 	private int totalFrames;		// = rotatingFrame + delayingFrame
 	private int index;				// The index of frame
+	private int waitingFrames;		// The waiting frames from waken up to playing animation
 	private Color color;			// The color setting of the renderer
 
 	// Use this for initialization
@@ -34,26 +35,36 @@ public class NodeNote : MonoBehaviour
 
 		gameObject.SetActive( false );
 	}
-	
+
 	// Update is called once per frame
 	void FixedUpdate ()
 	{
-		spriteRenderer.sprite = sprites[0];
-		// Rotate the click note per frame
-		if ( index < rotatingFrames )
-			spriteRenderer.transform.Rotate( Vector3.forward * degreePerFrame );
-
-		// Fade in effect
-		if ( color.a != 1.0f )
+		if ( waitingFrames == 0 )
 		{
-			color.a += 0.1f;
-			spriteRenderer.material.color = color;
+			spriteRenderer.sprite = sprites[0];
+			// Rotate the click note per frame
+			if ( index < rotatingFrames )
+				spriteRenderer.transform.Rotate( Vector3.forward * degreePerFrame );
+
+			// Fade in effect
+			if ( color.a != 1.0f )
+			{
+				color.a += 0.1f;
+				spriteRenderer.material.color = color;
+			}
+
+			++index;
+			// If the animation ends, sleep.
+			if ( index == totalFrames )
+				gameObject.SetActive( false );
 		}
-		
-		++index;
-		// If the animation ends, sleep.
-		if ( index == totalFrames )
-			gameObject.SetActive( false );
+		else
+			--waitingFrames;
+	}
+
+	public void setWaitingFrames( int frames )
+	{
+		waitingFrames = frames;
 	}
 
 	void OnDisable()
@@ -64,5 +75,7 @@ public class NodeNote : MonoBehaviour
 		// Reset alpha value
 		color.a = 0.0f;
 		spriteRenderer.material.color = color;
+
+		waitingFrames = 999;
 	}
 }
