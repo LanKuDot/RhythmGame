@@ -11,14 +11,16 @@ public class SlideNote : MonoBehaviour
 	public Sprite[] sprites;
 	private SpriteRenderer spriteRenderer;
 	private int index;
-	private int delayingFrames = 24;
+	private int delayingFrames = 48;
 	private int delayedFrames;			// The counter for the delayed frames
 	private int waitingFrames;			// The waiting frames from waken up to playing animation
+	private Color color;
 
 	// Use this for initialization
 	void Start ()
 	{
 		spriteRenderer = renderer as SpriteRenderer;
+		color = spriteRenderer.material.color;
 
 		gameObject.SetActive( false );
 	}
@@ -41,6 +43,12 @@ public class SlideNote : MonoBehaviour
 			{
 				--index;
 				++delayedFrames;
+
+				if ( color.a != 1.0f )
+				{
+					color.a += 0.1f;
+					spriteRenderer.material.color = color;
+				}
 			}
 		}
 		else
@@ -55,7 +63,11 @@ public class SlideNote : MonoBehaviour
 	/* Reset on disable */
 	void OnDisable()
 	{
-		index = 0;
+		// Make the program show the direction directly, not gradully
+		index = 23;
+
 		delayedFrames = 0;
+		color.a = 0.0f;
+		spriteRenderer.material.color = color;
 	}
 }
