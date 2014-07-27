@@ -1,11 +1,9 @@
 # The Rhythm Game on Android #
+## Developed by Unity3D ##
 
-## Version History ##
-
-### Alpha 1.1 ###
-- Date: 2014/07/14
+### Alpha 1.2.1 ###
+- Date: 2014/07/27
 - Updates:
-	- Add "Hold" Note
-	- Play the animation using Unity3D defined function
-	  instead of predefined frames
-	- Multi touch detection on Android device
+	- Add "Slide" note
+	- Fix when the click note is disactive by itself
+	  the index of the waitTouch at the TapPoint won't update.
