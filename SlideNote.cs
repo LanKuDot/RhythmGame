@@ -13,7 +13,6 @@ public class SlideNote : MonoBehaviour
 	private int index;
 	private int delayingFrames = 48;
 	private int delayedFrames;			// The counter for the delayed frames
-	private int waitingFrames;			// The waiting frames from waken up to playing animation
 	private Color color;
 
 	// Use this for initialization
@@ -31,33 +30,26 @@ public class SlideNote : MonoBehaviour
 	 */
 	void FixedUpdate ()
 	{
-		if ( waitingFrames == 0 )
+		spriteRenderer.sprite = sprites[index];
+		++index;
+		if ( index == 47 )
 		{
-			spriteRenderer.sprite = sprites[index];
-			++index;
-			if ( index == 47 )
-			{
-				gameObject.SetActive( false );
-			}
-			if ( index == 24 && delayedFrames != delayingFrames )
-			{
-				--index;
-				++delayedFrames;
+			gameObject.SetActive( false );
+		}
+		if ( index == 24 && delayedFrames != delayingFrames )
+		{
+			--index;
+			++delayedFrames;
 
-				if ( color.a != 1.0f )
-				{
-					color.a += 0.1f;
-					spriteRenderer.material.color = color;
-				}
+			if ( color.a != 1.0f )
+			{
+				color.a += 0.1f;
+				spriteRenderer.material.color = color;
 			}
 		}
-		else
-			--waitingFrames;
 	}
 
-	public void setWaitingFrames( int frames )
 	{
-		waitingFrames = frames;
 	}
 
 	/* Reset on disable */

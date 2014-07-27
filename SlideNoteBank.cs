@@ -23,6 +23,5 @@ public class SlideNoteBank : MonoBehaviour
 		nodeNotes[to].gameObject.SetActive( true );
 		nodeNotes[to].setWaitingFrames( (int)GameConfig.framePerBeats );
 		slideNotes[from * 9 + to].gameObject.SetActive( true );
-		slideNotes[from * 9 + to].setWaitingFrames( 0 );
 	}
 }
