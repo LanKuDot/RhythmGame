@@ -38,7 +38,7 @@ public class TouchingEvent : MonoBehaviour
 				{
 					if ( Input.GetTouch(i).phase == TouchPhase.Began )
 						checkTouch( Input.GetTouch(i).position, TouchPhase.Began );
-					else if ( Input.GetTouch (i).phase == TouchPhase.Ended )
+					else if ( Input.GetTouch(i).phase == TouchPhase.Ended )
 						checkTouch( Input.GetTouch(i).position, TouchPhase.Ended );
 				}
 			}
@@ -49,6 +49,8 @@ public class TouchingEvent : MonoBehaviour
 				checkTouch( Input.mousePosition, TouchPhase.Began );
 			else if ( Input.GetMouseButtonUp(0) )	// End of left holding
 				checkTouch( Input.mousePosition, TouchPhase.Ended );
+			else if ( Input.GetMouseButton(0) )	// Holding
+				checkTouch( Input.mousePosition, TouchPhase.Moved );
 		}
 	}	// end of Update()
 
@@ -67,7 +69,7 @@ public class TouchingEvent : MonoBehaviour
 		// If the touched point is on the TapPoint.
 		if ( hit )
 		{
-			Debug.Log ( hit.transform.gameObject.name );
+			//Debug.Log ( hit.transform.gameObject.name );
 			// Send message to the touched object to run function "touched"
 			switch ( touchState )
 			{
@@ -76,6 +78,9 @@ public class TouchingEvent : MonoBehaviour
 				break;
 			case TouchPhase.Ended:
 				hit.transform.gameObject.SendMessage( "touchEnded", null, SendMessageOptions.DontRequireReceiver );
+				break;
+			case TouchPhase.Moved:
+				hit.transform.gameObject.SendMessage( "touchMoving", null, SendMessageOptions.DontRequireReceiver );
 				break;
 			}
 		}

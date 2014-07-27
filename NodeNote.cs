@@ -9,18 +9,21 @@ public class NodeNote : MonoBehaviour
 {
 	public Sprite[] sprites;
 	private SpriteRenderer spriteRenderer;
+	private BoxCollider2D boxCollider;
 	private float degreePerFrame;
 	private int rotatingFrames;
 	private int delayingFrames;		// The number of frames in delaying
 	private int totalFrames;		// = rotatingFrame + delayingFrame
 	private int index;				// The index of frame
 	private int waitingFrames;		// The waiting frames from waken up to playing animation
+	private int touchedFrame;		// The index of the sprites when the note is touched
 	private Color color;			// The color setting of the renderer
 
 	// Use this for initialization
 	void Start ()
 	{
 		spriteRenderer = renderer as SpriteRenderer;
+		boxCollider = gameObject.collider2D as BoxCollider2D;
 		
 		// The click note would rotate 90 degrees in 2 beats
 		rotatingFrames = ( int )GameConfig.framePerBeats * 2;
@@ -29,7 +32,10 @@ public class NodeNote : MonoBehaviour
 		delayingFrames = 10;
 		// Calculate total frames
 		totalFrames = rotatingFrames + delayingFrames;
-		
+
+		// Invalid initial value would be discarded at the grading.
+		touchedFrame = 9999;
+
 		// Get the color setting of the renderer and initialize the alpha to 0
 		color = spriteRenderer.material.color;
 
@@ -41,6 +47,10 @@ public class NodeNote : MonoBehaviour
 	{
 		if ( waitingFrames == 0 )
 		{
+			// Enable the collider when start to playing the note
+			if ( touchedFrame == -1 )
+				boxCollider.enabled = true;
+
 			spriteRenderer.sprite = sprites[0];
 			// Rotate the click note per frame
 			if ( index < rotatingFrames )
@@ -67,8 +77,39 @@ public class NodeNote : MonoBehaviour
 		waitingFrames = frames;
 	}
 
+	/* Maybe the node is the first node. */
+	void touched()
+	{
+		touchedFrame = index;
+		boxCollider.enabled = false;
+	}
+
+	/* Maybe the node is the internal node. */
+	void touchMoving()
+	{
+		touchedFrame = index;
+		boxCollider.enabled = false;
+	}
+
+	/* Maybe the node is the last node, or the touching ended at the node. */
+	void touchEnded()
+	{
+		touchedFrame = index;
+		boxCollider.enabled = false;
+	}
+
 	void OnDisable()
 	{
+		// Grading
+		if ( touchedFrame == 9999 )
+			;
+		else if ( touchedFrame == -1 )
+			Debug.Log( gameObject.name + " Node miss" );
+		else if ( touchedFrame < 24 )
+			Debug.Log ( gameObject.name + " Node early" );
+		else
+			Debug.Log( gameObject.name + " Node Hit" );
+
 		// Reset Index
 		index = 0;
 		spriteRenderer.transform.eulerAngles = new Vector3( 0.0f, 0.0f, 90.0f );
@@ -77,5 +118,7 @@ public class NodeNote : MonoBehaviour
 		spriteRenderer.material.color = color;
 
 		waitingFrames = 999;
+		touchedFrame = -1;
+		boxCollider.enabled = false;
 	}
 }

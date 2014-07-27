@@ -13,6 +13,8 @@ public class SlideNote : MonoBehaviour
 	private int index;
 	private int delayingFrames = 48;
 	private int delayedFrames;			// The counter for the delayed frames
+	private bool slideFalied;			// Is the sliding uncompeleted?
+	private bool touched;				// Dose the finger slide onto the Note?
 	private Color color;
 
 	// Use this for initialization
@@ -20,6 +22,9 @@ public class SlideNote : MonoBehaviour
 	{
 		spriteRenderer = renderer as SpriteRenderer;
 		color = spriteRenderer.material.color;
+
+		// Invalid initial value
+		index = -1;
 
 		gameObject.SetActive( false );
 	}
@@ -47,19 +52,43 @@ public class SlideNote : MonoBehaviour
 				spriteRenderer.material.color = color;
 			}
 		}
+
+		if ( slideFalied )
+			gameObject.SetActive( false );
 	}
 
+	/* If the touching ended at the slide note, the Slide action is falied. */
+	void touchEnded()
 	{
+		slideFalied = true;
+	}
+
+	void touchMoving()
+	{
+		touched = true;
 	}
 
 	/* Reset on disable */
 	void OnDisable()
 	{
+		// Grading
+		if ( index == -1 )
+			;
+		else if ( !touched )
+			Debug.Log( gameObject.name + " Slide  Miss" );
+		else if ( slideFalied )
+			Debug.Log( gameObject.name + " Slide Failed" );
+		else
+			Debug.Log( gameObject.name + " Slide Success" );
+
 		// Make the program show the direction directly, not gradully
 		index = 23;
 
 		delayedFrames = 0;
 		color.a = 0.0f;
 		spriteRenderer.material.color = color;
+		
+		slideFalied = false;
+		touched = false;
 	}
 }
