@@ -73,13 +73,13 @@ public class SlideNote : MonoBehaviour
 	{
 		// Grading
 		if ( index == -1 )
-			;
+			;	// Discard invalid initial value
 		else if ( !touched )
-			Debug.Log( gameObject.name + " Slide  Miss" );
+			Grader.Instance.grading( 99, GameConfig.NoteTypes.SLIDE, Grader.gradeLevel.MISS );
 		else if ( slideFalied )
-			Debug.Log( gameObject.name + " Slide Failed" );
+			Grader.Instance.grading( 99, GameConfig.NoteTypes.SLIDE, Grader.gradeLevel.MISS );
 		else
-			Debug.Log( gameObject.name + " Slide Success" );
+			Grader.Instance.grading( 99, GameConfig.NoteTypes.SLIDE, Grader.gradeLevel.HIT );
 
 		// Make the program show the direction directly, not gradully
 		index = 23;

@@ -22,6 +22,7 @@ public class Grader : MonoBehaviour
 		EARLY,
 		PERFECT,
 		LATE,
+		HIT,
 		DISCARD		// Discarding initialzation judging
 	};
 
@@ -73,28 +74,36 @@ public class Grader : MonoBehaviour
 			gradingClick( level );
 		else if ( whichNote == GameConfig.NoteTypes.HOLD )
 			gradingHold( level );
+		else if ( whichNote == GameConfig.NoteTypes.SLIDE )
+			gradingSlide( level );
 
 		/* Display the grade */
-		switch( level )
+		if ( position_ID < 9 )
 		{
-		case gradeLevel.BAD:
-			gradeText_GUI[ position_ID ].guiText.text = "BAD";
-			break;
-		case gradeLevel.EARLY:
-			gradeText_GUI[ position_ID ].guiText.text = "EARLY";
-			break;
-		case gradeLevel.LATE:
-			gradeText_GUI[ position_ID ].guiText.text = "LATE";
-			break;
-		case gradeLevel.MISS:
-			gradeText_GUI[ position_ID ].guiText.text = "MISS";
-			break;
-		case gradeLevel.PERFECT:
-			gradeText_GUI[ position_ID ].guiText.text = "PERFECT";
-			break;
-		case gradeLevel.DISCARD:
-			gradeText_GUI[ position_ID ].guiText.text = " ";
-			break;
+			switch( level )
+			{
+			case gradeLevel.BAD:
+				gradeText_GUI[ position_ID ].guiText.text = "BAD";
+				break;
+			case gradeLevel.EARLY:
+				gradeText_GUI[ position_ID ].guiText.text = "EARLY";
+				break;
+			case gradeLevel.LATE:
+				gradeText_GUI[ position_ID ].guiText.text = "LATE";
+				break;
+			case gradeLevel.MISS:
+				gradeText_GUI[ position_ID ].guiText.text = "MISS";
+				break;
+			case gradeLevel.PERFECT:
+				gradeText_GUI[ position_ID ].guiText.text = "PERFECT";
+				break;
+			case gradeLevel.HIT:
+				gradeText_GUI[ position_ID ].guiText.text = "HIT";
+				break;
+			case gradeLevel.DISCARD:
+				gradeText_GUI[ position_ID ].guiText.text = " ";
+				break;
+			}
 		}
 
 		/* Combo counting and display */
@@ -109,16 +118,19 @@ public class Grader : MonoBehaviour
 		// Don't need to display the combo text when combo count less than 1.
 		else if ( combos == 0 )
 			++combos;
+		else if ( position_ID == 99 )
+			;	// No need to count the slideNote, only nodeNote need.
 		else
 		{
 			++combos;
 			comboText_GUI.guiText.text = combos + " combos";
 			// Combo bonus
-			Score.Instance.updateScore( 50 * combos );
+			Score.Instance.updateScore( 50 );
 		}
 
 		// Reset showing tick after being tapped.
-		showing_tick[ position_ID ] = 0;
+		if ( position_ID < 9 )
+			showing_tick[ position_ID ] = 0;
 	}
 
 	/* The grading of CLICK note */
@@ -153,6 +165,20 @@ public class Grader : MonoBehaviour
 			Score.Instance.updateScore( 500 );
 			break;
 		case gradeLevel.PERFECT:
+			Score.Instance.updateScore( 1000 );
+			break;
+		}
+	}
+
+	/* The grading of SLIDE note */
+	void gradingSlide( gradeLevel level )
+	{
+		switch( level )
+		{
+		case gradeLevel.BAD:
+			Score.Instance.updateScore( 200 );
+			break;
+		case gradeLevel.HIT:
 			Score.Instance.updateScore( 1000 );
 			break;
 		}

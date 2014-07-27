@@ -17,6 +17,7 @@ public class NodeNote : MonoBehaviour
 	private int index;				// The index of frame
 	private int waitingFrames;		// The waiting frames from waken up to playing animation
 	private int touchedFrame;		// The index of the sprites when the note is touched
+	private int position_id;
 	private Color color;			// The color setting of the renderer
 
 	// Use this for initialization
@@ -38,6 +39,10 @@ public class NodeNote : MonoBehaviour
 
 		// Get the color setting of the renderer and initialize the alpha to 0
 		color = spriteRenderer.material.color;
+
+		// Get position ID: NodeNote_#
+		position_id = gameObject.name[9];
+		position_id -= 48;
 
 		gameObject.SetActive( false );
 	}
@@ -102,13 +107,13 @@ public class NodeNote : MonoBehaviour
 	{
 		// Grading
 		if ( touchedFrame == 9999 )
-			;
+			;	// Discard invalid initial value
 		else if ( touchedFrame == -1 )
-			Debug.Log( gameObject.name + " Node miss" );
+			Grader.Instance.grading( position_id, GameConfig.NoteTypes.SLIDE, Grader.gradeLevel.MISS );
 		else if ( touchedFrame < 24 )
-			Debug.Log ( gameObject.name + " Node early" );
+			Grader.Instance.grading( position_id, GameConfig.NoteTypes.SLIDE, Grader.gradeLevel.BAD );
 		else
-			Debug.Log( gameObject.name + " Node Hit" );
+			Grader.Instance.grading( position_id, GameConfig.NoteTypes.SLIDE, Grader.gradeLevel.HIT );
 
 		// Reset Index
 		index = 0;
