@@ -73,6 +73,17 @@ public class TapPoint : MonoBehaviour
 		// waitTouch can't be more than or equal to next
 		if ( typeNow == GameConfig.NoteTypes.CLICK && waitTouch != next )
 		{
+			// Scan if there are clickNotes that is not touched and is disactive by itself.
+			// ( The self-disactive note would not update the value of waitTouch )
+			while ( preNotes[waitTouch].activeSelf == false && waitTouch != next )
+			{
+				++waitTouch;
+				waitTouch = waitTouch % preNotes.Length;
+			}
+
+			if ( waitTouch == next )
+				return;
+
 			// Force a PrepareNote to sleep.
 			preNotes[waitTouch].SetActive( false );
 			// Update the index of waitTouch
