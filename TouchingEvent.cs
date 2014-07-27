@@ -40,6 +40,8 @@ public class TouchingEvent : MonoBehaviour
 						checkTouch( Input.GetTouch(i).position, TouchPhase.Began );
 					else if ( Input.GetTouch(i).phase == TouchPhase.Ended )
 						checkTouch( Input.GetTouch(i).position, TouchPhase.Ended );
+					else if ( Input.GetTouch(i).phase == TouchPhase.Moved )
+						checkTouch( Input.GetTouch(i).position, TouchPhase.Moved );
 				}
 			}
 		}	// end of if ( isTouchingDevice )
