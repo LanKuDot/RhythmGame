@@ -13,6 +13,7 @@ public class TapPoint : MonoBehaviour
 	private int next;		// The index of the next PrepareNote would be waked up
 	private int waitTouch;	// The index of the PrepareNote that waiting for being touched
 	private GameConfig.NoteTypes typeNow;	// The type of next note.
+	private BoxCollider2D boxCollider;		// The collider of this TapPoint
 	
 	// Awake() is called before Start()
 	void Awake()
@@ -27,6 +28,9 @@ public class TapPoint : MonoBehaviour
 		preNotes[1] = GameObject.Find( "PrepareNote_" + tapPoint_index + "_1" );
 		preNotes[2] = GameObject.Find( "PrepareNote_" + tapPoint_index + "_2" );
 		preNotes[3] = GameObject.Find( "PrepareNote_" + tapPoint_index + "_3" );
+
+		boxCollider = gameObject.collider2D as BoxCollider2D;
+		boxCollider.enabled = false;
 	}
 	
 	// Use this for initialization
@@ -40,6 +44,7 @@ public class TapPoint : MonoBehaviour
 	/* Be called from NoteTable.
 	 * Wake a PrepareNote which belongs to this TapPoint up.
 	 * The waked PrepareNote will play the animation.
+	 * Enable the coillder to get the touch.
 	 */
 	public void wakeUpPrepareNote( GameConfig.NoteTypes type, int holdBeat )
 	{
@@ -59,6 +64,8 @@ public class TapPoint : MonoBehaviour
 			holdNote.gameObject.SetActive( true );
 			holdNote.setNewHoldBeats( holdBeat );
 		}
+
+		boxCollider.enabled = true;
 	}
 	
 	/* Be called from TouchingEvent.checkTouch() if the TouchingEvent
@@ -94,6 +101,9 @@ public class TapPoint : MonoBehaviour
 		{
 			holdNote.touched();
 		}
+
+		if ( next == waitTouch || typeNow == GameConfig.NoteTypes.HOLD )
+			boxCollider.enabled = false;
 	}
 
 	/* Be called from, TouchingEvent.checkTouch() if the mouse or finger
