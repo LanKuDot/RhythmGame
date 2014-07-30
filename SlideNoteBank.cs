@@ -18,8 +18,11 @@ public class SlideNoteBank : MonoBehaviour
 	 */
 	public void updateNote( int from, int to )
 	{
-		nodeNotes[from].gameObject.SetActive( true );
-		nodeNotes[from].setWaitingFrames( 0 );
+		if ( nodeNotes[from].gameObject.activeSelf == false )
+		{
+			nodeNotes[from].gameObject.SetActive( true );
+			nodeNotes[from].setWaitingFrames( 0 );
+		}
 		nodeNotes[to].gameObject.SetActive( true );
 		nodeNotes[to].setWaitingFrames( (int)GameConfig.framePerBeats );
 		slideNotes[from * 9 + to].gameObject.SetActive( true );
