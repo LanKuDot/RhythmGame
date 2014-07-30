@@ -33,10 +33,11 @@ public class NoteBank : MonoBehaviour
 		= new TapPoint[GameConfig.numOfTapNotes];	// Direct reference to all TapPoints
 	public SlideNoteBank slideNoteBank;		// Direct reference to SlideNoteBank to assign slide note
 
-	private int beatCounter = -1;	// The counter counts beats after the song start playing.
+	private int beatCounter = -1;	// The counter which counts beats after the song start playing.
 	private int nextBeat = 0;		// The next beat that PrepareNote would appear.
 	private int noteTableIndex = 0;	// The index for reading note table.
 	private Note nextNote;			// The next note that would appear.
+	private int endingBeatCounter;	// The counter which counts beats after there has no note to assign.
 
 	private float BPM = GameConfig.songBPM;		// The BPM of the song
 	private float beatTime;			// Realtime interval of single beat
@@ -136,10 +137,12 @@ public class NoteBank : MonoBehaviour
 	{
 		// Calculate the real time interval of single beat
 		beatTime = 60f / BPM;
-		// Setting the time interval of each frame
+		// Set the time interval of each frame
 		Time.fixedDeltaTime = beatTime / GameConfig.framePerBeats;
 		// Get the first Note from note table
 		updateNote();
+		// Set the beats to quit the game
+		endingBeatCounter = 10;
 	}
 	
 	// Update is called once per frame
@@ -159,6 +162,13 @@ public class NoteBank : MonoBehaviour
 					tapPoints[ nextNote.who ].wakeUpPrepareNote( nextNote.which, nextNote.howLong );
 
 				updateNote();
+			}
+
+			if ( noteTableEnds )
+			{
+				--endingBeatCounter;
+				if ( endingBeatCounter == 0 )
+					Application.Quit();
 			}
 		}
 	}
