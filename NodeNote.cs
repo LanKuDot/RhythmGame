@@ -110,7 +110,7 @@ public class NodeNote : MonoBehaviour
 			;	// Discard invalid initial value
 		else if ( touchedFrame == -1 )
 			Grader.Instance.grading( position_id, GameConfig.NoteTypes.SLIDE, Grader.gradeLevel.MISS );
-		else if ( touchedFrame < 24 )
+		else if ( touchedFrame < 10 )
 			Grader.Instance.grading( position_id, GameConfig.NoteTypes.SLIDE, Grader.gradeLevel.BAD );
 		else
 			Grader.Instance.grading( position_id, GameConfig.NoteTypes.SLIDE, Grader.gradeLevel.HIT );
